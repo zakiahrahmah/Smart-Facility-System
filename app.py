@@ -1,37 +1,24 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_mysqldb import MySQL
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import hashlib
 from datetime import datetime
-import MySQLdb.cursors
-import os
 import pymysql
-
-pymysql.install_as_MySQLdb()
+import os
 
 app = Flask(__name__)
 
-# ================== CONFIG DATABASE RAILWAY ==================
-db_url = os.environ.get("MYSQL_URL")
-
-if db_url:
-    db = urlparse(db_url)
-
-    app.config['MYSQL_HOST'] = db.hostname
-    app.config['MYSQL_USER'] = db.username
-    app.config['MYSQL_PASSWORD'] = db.password
-    app.config['MYSQL_DB'] = db.path[1:]
-else:
-    # fallback lokal (biar aman kalau test di laptop)
-    app.config['MYSQL_HOST'] = 'localhost'
-    app.config['MYSQL_USER'] = 'root'
-    app.config['MYSQL_PASSWORD'] = ''
-    app.config['MYSQL_DB'] = 'smart_facility_db'
-
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+# ================== CONFIG ==================
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'bebas123')
 
-mysql = MySQL(app)
+# ================== DATABASE ==================
+def get_db():
+    return pymysql.connect(
+        host=os.environ.get("MYSQLHOST"),
+        user=os.environ.get("MYSQLUSER"),
+        password=os.environ.get("MYSQLPASSWORD"),
+        database=os.environ.get("MYSQLDATABASE"),
+        cursorclass=pymysql.cursors.DictCursor
+    )
 
 # ================== PASSWORD ==================
 def hash_password(password):
@@ -55,13 +42,20 @@ class User(UserMixin):
 @login_manager.user_loader
 def load_user(user_id):
     try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT id, username, role, nama_lengkap FROM users WHERE id = %s", (user_id,))
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT id, username, role, nama_lengkap FROM users WHERE id=%s",
+            (user_id,)
+        )
         user = cursor.fetchone()
-        cursor.close()
+
+        conn.close()
 
         if user:
             return User(user['id'], user['username'], user['role'], user['nama_lengkap'])
+
     except Exception as e:
         print("USER LOAD ERROR:", e)
 
@@ -84,10 +78,16 @@ def login():
             username = request.form['username']
             password = request.form['password']
 
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+            conn = get_db()
+            cursor = conn.cursor()
+
+            cursor.execute(
+                "SELECT * FROM users WHERE username=%s",
+                (username,)
+            )
             user = cursor.fetchone()
-            cursor.close()
+
+            conn.close()
 
             if user and check_password(password, user['password']):
                 user_obj = User(user['id'], user['username'], user['role'], user['nama_lengkap'])
@@ -105,43 +105,45 @@ def login():
 
     return render_template('login.html')
 
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
+# ================== DASHBOARD ==================
 @app.route('/dashboard')
 @login_required
 def dashboard():
     try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        conn = get_db()
+        cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM fasilitas WHERE status = 'tersedia'")
+        cursor.execute("SELECT * FROM fasilitas WHERE status='tersedia'")
         fasilitas = cursor.fetchall()
 
         cursor.execute("""
             SELECT p.*, f.nama_fasilitas
             FROM peminjaman p
-            JOIN fasilitas f ON p.fasilitas_id = f.id
-            WHERE p.user_id = %s
+            JOIN fasilitas f ON p.fasilitas_id=f.id
+            WHERE p.user_id=%s
         """, (current_user.id,))
         riwayat = cursor.fetchall()
 
-        cursor.close()
+        conn.close()
 
-        return render_template('dashboard.html', fasilitas=fasilitas, riwayat=riwayat)
+        return render_template(
+            'dashboard.html',
+            fasilitas=fasilitas,
+            riwayat=riwayat
+        )
 
     except Exception as e:
         print("DASHBOARD ERROR:", e)
-        return f"DASHBOARD ERROR: {str(e)}"
+        return f"ERROR: {str(e)}"
 
 # ================== TEST DB ==================
 @app.route('/cekdb')
 def cekdb():
     try:
-        cursor = mysql.connection.cursor()
+        conn = get_db()
+        cursor = conn.cursor()
         cursor.execute("SELECT 1")
+        conn.close()
         return "DB CONNECT OK"
     except Exception as e:
         return f"DB ERROR: {str(e)}"
