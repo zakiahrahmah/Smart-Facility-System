@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <h2>Dashboard Admin</h2>
+    <p>Selamat datang, {{ current_user.nama_lengkap }}!</p>
+    
+    <!-- Statistik Cards -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Pending</h5>
+                    <p class="card-text display-4">{{ pending }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Disetujui</h5>
+                    <p class="card-text display-4">{{ disetujui }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Fasilitas</h5>
+                    <p class="card-text display-4">{{ total_fasilitas }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Mahasiswa</h5>
+                    <p class="card-text display-4">{{ total_mahasiswa }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Peminjaman Pending -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>Peminjaman Menunggu Persetujuan</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>No</th>
+                            <th>Peminjam</th>
+                            <th>Fasilitas</th>
+                            <th>Jumlah</th>
+                            <th>Tanggal</th>
+                            <th>Waktu</th>
+                            <th>Keterangan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in peminjaman_pending %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>
+                                <strong>{{ p.nama_lengkap }}</strong><br>
+                                <small class="text-muted">{{ p.username }}</small>
+                            </td>
+                            <td>
+                                <strong>{{ p.nama_fasilitas }}</strong><br>
+                                <small class="text-muted">{{ p.kode_fasilitas }}</small>
+                            </td>
+                            <td>{{ p.jumlah }}</td>
+                            <td>{{ p.tanggal_pinjam }}</td>
+                            <td>{{ p.waktu_mulai }} - {{ p.waktu_selesai }}</td>
+                            <td>{{ p.keterangan if p.keterangan else '-' }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('update_status', id=p.id, status='disetujui') }}" 
+                                       class="btn btn-sm btn-success"
+                                       onclick="return confirm('Setujui peminjaman ini?')">
+                                       <i class="fas fa-check"></i> Setujui
+                                    </a>
+                                    <a href="{{ url_for('update_status', id=p.id, status='ditolak') }}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Tolak peminjaman ini?')">
+                                       <i class="fas fa-times"></i> Tolak
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">
+                                <div class="alert alert-info mb-0">
+                                    Tidak ada peminjaman yang menunggu persetujuan
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

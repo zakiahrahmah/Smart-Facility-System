@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h5><i class="fas fa-list"></i> Semua Fasilitas</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama</th>
+                        <th>Kategori</th>
+                        <th>Deskripsi</th>
+                        <th>Stok</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in fasilitas %}
+                    <tr>
+                        <td>{{ f.kode_fasilitas }}</td>
+                        <td>{{ f.nama_fasilitas }}</td>
+                        <td>{{ f.kategori }}</td>
+                        <td>{{ f.deskripsi[:50] }}...</td>
+                        <td>{{ f.jumlah_tersedia }}/{{ f.jumlah_stok }}</td>
+                        <td>{% if f.jumlah_tersedia > 0 %}✅ Tersedia{% else %}❌ Habis{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

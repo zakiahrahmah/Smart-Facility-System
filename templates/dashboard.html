@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5><i class="fas fa-building"></i> Daftar Fasilitas</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for f in fasilitas %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ f.nama_fasilitas }}</h6>
+                                <p class="card-text small">{{ f.deskripsi[:80] }}{% if f.deskripsi|length > 80 %}...{% endif %}</p>
+                                <p class="mb-1"><strong>Stok:</strong> {{ f.jumlah_tersedia }}/{{ f.jumlah_stok }}</p>
+                                <p class="mb-1"><strong>Kategori:</strong> {{ f.kategori }}</p>
+                                {% if f.jumlah_tersedia > 0 %}
+                                <button class="btn btn-sm btn-primary btn-pinjam mt-2" 
+                                        data-id="{{ f.id }}" 
+                                        data-nama="{{ f.nama_fasilitas }}">
+                                    <i class="fas fa-calendar-plus"></i> Pinjam
+                                </button>
+                                {% else %}
+                                <button class="btn btn-sm btn-secondary mt-2" disabled>
+                                    <i class="fas fa-times"></i> Stok Habis
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-warning">
+                <h5><i class="fas fa-history"></i> Riwayat Peminjaman</h5>
+            </div>
+            <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                {% if riwayat %}
+                    {% for r in riwayat %}
+                    <div class="border-bottom mb-2 pb-2">
+                        <div class="fw-bold">{{ r.nama_fasilitas }}</div>
+                        <div class="small">{{ r.tanggal_pinjam }} | {{ r.waktu_mulai }} - {{ r.waktu_selesai }}</div>
+                        <div class="small">Jumlah: {{ r.jumlah }}</div>
+                        <div class="mt-1">
+                            <span class="badge bg-secondary">
+                                {{ r.status|upper }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center">Belum ada riwayat peminjaman.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Peminjaman -->
+<div class="modal fade" id="pinjamModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-calendar-plus"></i> Form Peminjaman</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('pinjam') }}">
+                <div class="modal-body">
+                    <input type="hidden" name="fasilitas_id" id="fasilitas_id">
+                    <div class="mb-3">
+                        <label class="form-label">Fasilitas</label>
+                        <input type="text" class="form-control" id="fasilitas_nama" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jumlah" class="form-label">Jumlah</label>
+                        <input type="number" class="form-control" id="jumlah" name="jumlah" value="1" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tanggal" class="form-label">Tanggal Peminjaman</label>
+                        <input type="date" class="form-control" id="tanggal" name="tanggal" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="waktu_mulai" class="form-label">Waktu Mulai</label>
+                            <input type="time" class="form-control" id="waktu_mulai" name="waktu_mulai" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="waktu_selesai" class="form-label">Waktu Selesai</label>
+                            <input type="time" class="form-control" id="waktu_selesai" name="waktu_selesai" required>
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-2">
+                        <label for="keterangan" class="form-label">Keterangan</label>
+                        <textarea class="form-control" id="keterangan" name="keterangan" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Ajukan Peminjaman</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const today = new Date().toISOString().split('T')[0];
+    const tanggalInput = document.getElementById('tanggal');
+    if (tanggalInput) {
+        tanggalInput.min = today;
+    }
+    
+    document.querySelectorAll('.btn-pinjam').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('fasilitas_id').value = this.dataset.id;
+            document.getElementById('fasilitas_nama').value = this.dataset.nama;
+            new bootstrap.Modal(document.getElementById('pinjamModal')).show();
+        });
+    });
+</script>
+{% endblock %}
