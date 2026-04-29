@@ -12,11 +12,16 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'bebas123')
 
 # ================== DATABASE ==================
 def get_db():
+    host = os.environ.get("MYSQLHOST", "localhost")
+    user = os.environ.get("MYSQLUSER", "root")
+    password = os.environ.get("MYSQLPASSWORD", "")
+    db = os.environ.get("MYSQLDATABASE", "smart_facility_db")
+
     return pymysql.connect(
-        host=os.environ.get("MYSQLHOST"),
-        user=os.environ.get("MYSQLUSER"),
-        password=os.environ.get("MYSQLPASSWORD"),
-        database=os.environ.get("MYSQLDATABASE"),
+        host=host,
+        user=user,
+        password=password,
+        database=db,
         cursorclass=pymysql.cursors.DictCursor
     )
 
@@ -104,6 +109,51 @@ def login():
         return f"LOGIN ERROR: {str(e)}"
 
     return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        nama = request.form['nama_lengkap']
+        username = request.form['username']
+        email = request.form['email']
+        password = hash_password(request.form['password'])
+
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
+        existing = cursor.fetchone()
+
+        if existing:
+            flash("Username sudah digunakan!", "danger")
+        else:
+            cursor.execute("""
+                INSERT INTO users (nama_lengkap, username, email, password, role)
+                VALUES (%s, %s, %s, %s, 'user')
+            """, (nama, username, email, password))
+
+            conn.commit()
+            conn.close()
+
+            flash("Registrasi berhasil, silakan login!", "success")
+            return redirect(url_for('login'))
+
+        conn.close()
+
+    return render_template("register.html")
+
+@app.route('/fasilitas')
+@login_required
+def fasilitas():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM fasilitas")
+    data = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("fasilitas.html", data=data)
 
 # ================== DASHBOARD ==================
 @app.route('/dashboard')
