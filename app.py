@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import hashlib
 from datetime import datetime
+from flask_login import logout_user
 import pymysql
 import os
 
@@ -154,6 +155,50 @@ def fasilitas():
     conn.close()
 
     return render_template("fasilitas.html", data=data)
+
+@app.route('/pinjam', methods=['POST'])
+@login_required
+def pinjam():
+    try:
+        fasilitas_id = request.form['fasilitas_id']
+        jumlah = request.form['jumlah']
+        tanggal = request.form['tanggal']
+        waktu_mulai = request.form['waktu_mulai']
+        waktu_selesai = request.form['waktu_selesai']
+        keterangan = request.form['keterangan']
+
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO peminjaman 
+            (user_id, fasilitas_id, jumlah, tanggal_pinjam, waktu_mulai, waktu_selesai, keterangan, status)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,'pending')
+        """, (
+            current_user.id,
+            fasilitas_id,
+            jumlah,
+            tanggal,
+            waktu_mulai,
+            waktu_selesai,
+            keterangan
+        ))
+
+        conn.commit()
+        conn.close()
+
+        flash("Peminjaman berhasil diajukan!", "success")
+        return redirect(url_for('dashboard'))
+
+    except Exception as e:
+        print("PINJAM ERROR:", e)
+        return f"ERROR PINJAM: {str(e)}"
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 # ================== DASHBOARD ==================
 @app.route('/dashboard')
