@@ -13,16 +13,11 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'bebas123')
 
 # ================== DATABASE ==================
 def get_db():
-    host = os.environ.get("MYSQLHOST", "localhost")
-    user = os.environ.get("MYSQLUSER", "root")
-    password = os.environ.get("MYSQLPASSWORD", "")
-    db = os.environ.get("MYSQLDATABASE", "smart_facility_db")
-
     return pymysql.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=db,
+        host=os.environ["MYSQLHOST"],
+        user=os.environ["MYSQLUSER"],
+        password=os.environ["MYSQLPASSWORD"],
+        database=os.environ["MYSQLDATABASE"],
         cursorclass=pymysql.cursors.DictCursor
     )
 
@@ -114,20 +109,22 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        nama = request.form['nama_lengkap']
-        username = request.form['username']
-        email = request.form['email']
-        password = hash_password(request.form['password'])
+        try:
+            nama = request.form['nama_lengkap']
+            username = request.form['username']
+            email = request.form['email']
+            password = hash_password(request.form['password'])
 
-        conn = get_db()
-        cursor = conn.cursor()
+            conn = get_db()
+            cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
-        existing = cursor.fetchone()
+            cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
+            existing = cursor.fetchone()
 
-        if existing:
-            flash("Username sudah digunakan!", "danger")
-        else:
+            if existing:
+                flash("Username sudah digunakan!", "danger")
+                return render_template("register.html")
+
             cursor.execute("""
                 INSERT INTO users (nama_lengkap, username, email, password, role)
                 VALUES (%s, %s, %s, %s, 'user')
@@ -136,10 +133,12 @@ def register():
             conn.commit()
             conn.close()
 
-            flash("Registrasi berhasil, silakan login!", "success")
+            flash("Registrasi berhasil!", "success")
             return redirect(url_for('login'))
 
-        conn.close()
+        except Exception as e:
+            print("REGISTER ERROR:", e)
+            return f"REGISTER ERROR: {str(e)}"
 
     return render_template("register.html")
 
@@ -208,7 +207,7 @@ def dashboard():
         conn = get_db()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM fasilitas WHERE status='tersedia'")
+        cursor.execute("SELECT * FROM fasilitas")
         fasilitas = cursor.fetchall()
 
         cursor.execute("""
@@ -230,7 +229,42 @@ def dashboard():
     except Exception as e:
         print("DASHBOARD ERROR:", e)
         return f"ERROR: {str(e)}"
+    
+@app.route('/admin_dashboard')
+@login_required
+def admin_dashboard():
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
 
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM users")
+        users = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM fasilitas")
+        fasilitas = cursor.fetchall()
+
+        cursor.execute("""
+            SELECT p.*, u.username, f.nama_fasilitas
+            FROM peminjaman p
+            JOIN users u ON p.user_id = u.id
+            JOIN fasilitas f ON p.fasilitas_id = f.id
+        """)
+        peminjaman = cursor.fetchall()
+
+        conn.close()
+
+        return render_template(
+            "admin_dashboard.html",
+            users=users,
+            fasilitas=fasilitas,
+            peminjaman=peminjaman
+        )
+
+    except Exception as e:
+        return f"ADMIN ERROR: {str(e)}"
 # ================== TEST DB ==================
 @app.route('/cekdb')
 def cekdb():
@@ -243,6 +277,8 @@ def cekdb():
     except Exception as e:
         return f"DB ERROR: {str(e)}"
 
+
+    
 # ================== RUN ==================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
