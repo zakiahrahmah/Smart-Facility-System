@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session 
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import hashlib
 from datetime import datetime
@@ -9,19 +9,14 @@ app = Flask(__name__)
 
 # ================== CONFIG ==================
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'bebas123')
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'nama_database_kamu'
-
 
 # ================== DATABASE ==================
 def get_db():
     return pymysql.connect(
-        host=os.environ["MYSQLHOST"],
-        user=os.environ["MYSQLUSER"],
-        password=os.environ["MYSQLPASSWORD"],
-        database=os.environ["MYSQLDATABASE"],
+        host=os.environ.get("MYSQLHOST", "localhost"),
+        user=os.environ.get("MYSQLUSER", "root"),
+        password=os.environ.get("MYSQLPASSWORD", ""),
+        database=os.environ.get("MYSQLDATABASE", "nama_database_kamu"),
         cursorclass=pymysql.cursors.DictCursor
     )
 
@@ -101,7 +96,6 @@ def login():
             flash('Username atau password salah!', 'danger')
 
     except Exception as e:
-        print("LOGIN ERROR:", e)
         return f"LOGIN ERROR: {str(e)}"
 
     return render_template('login.html')
@@ -120,9 +114,7 @@ def register():
             cursor = conn.cursor()
 
             cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
-            existing = cursor.fetchone()
-
-            if existing:
+            if cursor.fetchone():
                 flash("Username sudah digunakan!", "danger")
                 return render_template("register.html")
 
@@ -138,7 +130,6 @@ def register():
             return redirect(url_for('login'))
 
         except Exception as e:
-            print("REGISTER ERROR:", e)
             return f"REGISTER ERROR: {str(e)}"
 
     return render_template("register.html")
@@ -159,20 +150,16 @@ def dashboard():
             FROM peminjaman p
             JOIN fasilitas f ON p.fasilitas_id=f.id
             WHERE p.user_id=%s
+            ORDER BY p.id DESC
         """, (current_user.id,))
         riwayat = cursor.fetchall()
 
         conn.close()
 
-        return render_template(
-            'dashboard.html',
-            fasilitas=fasilitas,
-            riwayat=riwayat
-        )
+        return render_template('dashboard.html', fasilitas=fasilitas, riwayat=riwayat)
 
     except Exception as e:
-        print("DASHBOARD ERROR:", e)
-        return f"ERROR: {str(e)}"
+        return f"DASHBOARD ERROR: {str(e)}"
 
 # ================== PINJAM ==================
 @app.route('/pinjam', methods=['POST'])
@@ -205,6 +192,41 @@ def pinjam():
     except Exception as e:
         return f"PINJAM ERROR: {str(e)}"
 
+# ================== BATAL PEMINJAMAN ==================
+@app.route('/batal_peminjaman/<int:id>', methods=['POST'])
+@login_required
+def batal_peminjaman(id):
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT status FROM peminjaman 
+            WHERE id=%s AND user_id=%s
+        """, (id, current_user.id))
+
+        data = cursor.fetchone()
+
+        if data:
+            if data['status'] == 'pending':
+                cursor.execute("""
+                    UPDATE peminjaman 
+                    SET status='dibatalkan' 
+                    WHERE id=%s
+                """, (id,))
+                conn.commit()
+                flash('Peminjaman berhasil dibatalkan!', 'success')
+            else:
+                flash('Tidak bisa dibatalkan!', 'danger')
+        else:
+            flash('Data tidak ditemukan!', 'danger')
+
+        conn.close()
+        return redirect(url_for('dashboard'))
+
+    except Exception as e:
+        return f"ERROR BATAL: {str(e)}"
+
 # ================== ADMIN ==================
 @app.route('/admin_dashboard')
 @login_required
@@ -212,100 +234,61 @@ def admin_dashboard():
     if current_user.role != 'admin':
         return redirect(url_for('dashboard'))
 
-    try:
-        conn = get_db()
-        cursor = conn.cursor()
+    conn = get_db()
+    cursor = conn.cursor()
 
-        # Statistik
-        cursor.execute("SELECT COUNT(*) as total FROM peminjaman WHERE status='pending'")
-        pending = cursor.fetchone()['total']
+    cursor.execute("SELECT COUNT(*) as total FROM peminjaman WHERE status='pending'")
+    pending = cursor.fetchone()['total']
 
-        cursor.execute("SELECT COUNT(*) as total FROM peminjaman WHERE status='disetujui'")
-        disetujui = cursor.fetchone()['total']
+    cursor.execute("SELECT COUNT(*) as total FROM peminjaman WHERE status='disetujui'")
+    disetujui = cursor.fetchone()['total']
 
-        cursor.execute("SELECT COUNT(*) as total FROM fasilitas")
-        total_fasilitas = cursor.fetchone()['total']
+    cursor.execute("SELECT COUNT(*) as total FROM fasilitas")
+    total_fasilitas = cursor.fetchone()['total']
 
-        cursor.execute("SELECT COUNT(*) as total FROM users WHERE role='user'")
-        total_mahasiswa = cursor.fetchone()['total']
+    cursor.execute("SELECT COUNT(*) as total FROM users WHERE role='user'")
+    total_mahasiswa = cursor.fetchone()['total']
 
-        # Data peminjaman pending
-        cursor.execute("""
+    cursor.execute("""
         SELECT p.*, u.username, u.nama_lengkap, f.nama_fasilitas
         FROM peminjaman p
         LEFT JOIN users u ON p.user_id = u.id
         LEFT JOIN fasilitas f ON p.fasilitas_id = f.id
-         WHERE p.status = 'pending'
+        WHERE p.status = 'pending'
     """)
-        peminjaman_pending = cursor.fetchall()
+    peminjaman_pending = cursor.fetchall()
 
-        conn.close()
+    conn.close()
 
-        return render_template(
-            "admin_dashboard.html",
-            pending=pending,
-            disetujui=disetujui,
-            total_fasilitas=total_fasilitas,
-            total_mahasiswa=total_mahasiswa,
-            peminjaman_pending=peminjaman_pending
-        )
+    return render_template(
+        "admin_dashboard.html",
+        pending=pending,
+        disetujui=disetujui,
+        total_fasilitas=total_fasilitas,
+        total_mahasiswa=total_mahasiswa,
+        peminjaman_pending=peminjaman_pending
+    )
 
-    except Exception as e:
-        return f"ADMIN ERROR: {str(e)}"
-
+# ================== UPDATE STATUS ==================
 @app.route('/update_status/<int:id>/<status>')
 @login_required
 def update_status(id, status):
     if current_user.role != 'admin':
         return redirect(url_for('dashboard'))
 
-    try:
-        conn = get_db()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            UPDATE peminjaman 
-            SET status=%s 
-            WHERE id=%s
-        """, (status, id))
-
-        conn.commit()
-        conn.close()
-
-        flash("Status berhasil diperbarui!", "success")
-        return redirect(url_for('admin_dashboard'))
-
-    except Exception as e:
-        return f"UPDATE ERROR: {str(e)}"
-    
-@app.route('/batal_peminjaman/<int:id>', methods=['POST'])
-@login_required
-def batal_peminjaman(id):
     conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT status FROM peminjaman 
-        WHERE id=%s AND user_id=%s
-    """, (id, current_user.id))
+        UPDATE peminjaman SET status=%s WHERE id=%s
+    """, (status, id))
 
-    data = cursor.fetchone()
-
-    if data:
-        if data['status'] == 'pending':
-            cursor.execute("""
-                UPDATE peminjaman 
-                SET status='dibatalkan' 
-                WHERE id=%s
-            """, (id,))
-            conn.commit()
-            flash('Peminjaman berhasil dibatalkan!', 'success')
-        else:
-            flash('Tidak bisa dibatalkan!', 'danger')
-
+    conn.commit()
     conn.close()
-    return redirect(url_for('dashboard'))
-    
+
+    flash("Status berhasil diperbarui!", "success")
+    return redirect(url_for('admin_dashboard'))
+
 # ================== LOGOUT ==================
 @app.route('/logout')
 @login_required
@@ -313,18 +296,7 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-# ================== TEST DB ==================
-@app.route('/cekdb')
-def cekdb():
-    try:
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute("SELECT 1")
-        conn.close()
-        return "DB CONNECT OK"
-    except Exception as e:
-        return f"DB ERROR: {str(e)}"
-
 # ================== RUN ==================
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+    app.run(debug=True)
+    
