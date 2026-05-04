@@ -211,32 +211,68 @@ def admin_dashboard():
         conn = get_db()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM users")
-        users = cursor.fetchall()
+        # Statistik
+        cursor.execute("SELECT COUNT(*) as total FROM peminjaman WHERE status='pending'")
+        pending = cursor.fetchone()['total']
 
-        cursor.execute("SELECT * FROM fasilitas")
-        fasilitas = cursor.fetchall()
+        cursor.execute("SELECT COUNT(*) as total FROM peminjaman WHERE status='disetujui'")
+        disetujui = cursor.fetchone()['total']
 
+        cursor.execute("SELECT COUNT(*) as total FROM fasilitas")
+        total_fasilitas = cursor.fetchone()['total']
+
+        cursor.execute("SELECT COUNT(*) as total FROM users WHERE role='user'")
+        total_mahasiswa = cursor.fetchone()['total']
+
+        # Data peminjaman pending
         cursor.execute("""
-            SELECT p.*, u.username, f.nama_fasilitas
-            FROM peminjaman p
-            JOIN users u ON p.user_id = u.id
-            JOIN fasilitas f ON p.fasilitas_id = f.id
-        """)
-        peminjaman = cursor.fetchall()
+        SELECT p.*, u.username, u.nama_lengkap, f.nama_fasilitas
+        FROM peminjaman p
+        LEFT JOIN users u ON p.user_id = u.id
+        LEFT JOIN fasilitas f ON p.fasilitas_id = f.id
+         WHERE p.status = 'pending'
+    """)
+        peminjaman_pending = cursor.fetchall()
 
         conn.close()
 
         return render_template(
             "admin_dashboard.html",
-            users=users,
-            fasilitas=fasilitas,
-            peminjaman=peminjaman
+            pending=pending,
+            disetujui=disetujui,
+            total_fasilitas=total_fasilitas,
+            total_mahasiswa=total_mahasiswa,
+            peminjaman_pending=peminjaman_pending
         )
 
     except Exception as e:
         return f"ADMIN ERROR: {str(e)}"
 
+@app.route('/update_status/<int:id>/<status>')
+@login_required
+def update_status(id, status):
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            UPDATE peminjaman 
+            SET status=%s 
+            WHERE id=%s
+        """, (status, id))
+
+        conn.commit()
+        conn.close()
+
+        flash("Status berhasil diperbarui!", "success")
+        return redirect(url_for('admin_dashboard'))
+
+    except Exception as e:
+        return f"UPDATE ERROR: {str(e)}"
+    
 # ================== LOGOUT ==================
 @app.route('/logout')
 @login_required
