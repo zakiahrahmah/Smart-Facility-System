@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import hashlib
 from datetime import datetime
-from flask_login import logout_user
 import pymysql
 import os
 
@@ -51,7 +50,6 @@ def load_user(user_id):
             (user_id,)
         )
         user = cursor.fetchone()
-
         conn.close()
 
         if user:
@@ -72,6 +70,7 @@ def inject_now():
 def index():
     return redirect(url_for('login'))
 
+# ================== LOGIN ==================
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     try:
@@ -82,12 +81,8 @@ def login():
             conn = get_db()
             cursor = conn.cursor()
 
-            cursor.execute(
-                "SELECT * FROM users WHERE username=%s",
-                (username,)
-            )
+            cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
             user = cursor.fetchone()
-
             conn.close()
 
             if user and check_password(password, user['password']):
@@ -106,6 +101,7 @@ def login():
 
     return render_template('login.html')
 
+# ================== REGISTER ==================
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -142,64 +138,7 @@ def register():
 
     return render_template("register.html")
 
-@app.route('/fasilitas')
-@login_required
-def fasilitas():
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM fasilitas")
-    data = cursor.fetchall()
-
-    conn.close()
-
-    return render_template("fasilitas.html", data=data)
-
-@app.route('/pinjam', methods=['POST'])
-@login_required
-def pinjam():
-    try:
-        fasilitas_id = request.form['fasilitas_id']
-        jumlah = request.form['jumlah']
-        tanggal = request.form['tanggal']
-        waktu_mulai = request.form['waktu_mulai']
-        waktu_selesai = request.form['waktu_selesai']
-        keterangan = request.form['keterangan']
-
-        conn = get_db()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            INSERT INTO peminjaman 
-            (user_id, fasilitas_id, jumlah, tanggal_pinjam, waktu_mulai, waktu_selesai, keterangan, status)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,'pending')
-        """, (
-            current_user.id,
-            fasilitas_id,
-            jumlah,
-            tanggal,
-            waktu_mulai,
-            waktu_selesai,
-            keterangan
-        ))
-
-        conn.commit()
-        conn.close()
-
-        flash("Peminjaman berhasil diajukan!", "success")
-        return redirect(url_for('dashboard'))
-
-    except Exception as e:
-        print("PINJAM ERROR:", e)
-        return f"ERROR PINJAM: {str(e)}"
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-# ================== DASHBOARD ==================
+# ================== DASHBOARD USER ==================
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -229,7 +168,39 @@ def dashboard():
     except Exception as e:
         print("DASHBOARD ERROR:", e)
         return f"ERROR: {str(e)}"
-    
+
+# ================== PINJAM ==================
+@app.route('/pinjam', methods=['POST'])
+@login_required
+def pinjam():
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO peminjaman 
+            (user_id, fasilitas_id, jumlah, tanggal_pinjam, waktu_mulai, waktu_selesai, keterangan, status)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,'pending')
+        """, (
+            current_user.id,
+            request.form['fasilitas_id'],
+            request.form['jumlah'],
+            request.form['tanggal'],
+            request.form['waktu_mulai'],
+            request.form['waktu_selesai'],
+            request.form['keterangan']
+        ))
+
+        conn.commit()
+        conn.close()
+
+        flash("Peminjaman berhasil!", "success")
+        return redirect(url_for('dashboard'))
+
+    except Exception as e:
+        return f"PINJAM ERROR: {str(e)}"
+
+# ================== ADMIN ==================
 @app.route('/admin_dashboard')
 @login_required
 def admin_dashboard():
@@ -265,6 +236,14 @@ def admin_dashboard():
 
     except Exception as e:
         return f"ADMIN ERROR: {str(e)}"
+
+# ================== LOGOUT ==================
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
 # ================== TEST DB ==================
 @app.route('/cekdb')
 def cekdb():
@@ -277,8 +256,6 @@ def cekdb():
     except Exception as e:
         return f"DB ERROR: {str(e)}"
 
-
-    
 # ================== RUN ==================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
