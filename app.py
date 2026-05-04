@@ -1,14 +1,21 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session 
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import hashlib
 from datetime import datetime
 import pymysql
+from flask_mysqldb import MySQL 
 import os
 
 app = Flask(__name__)
 
 # ================== CONFIG ==================
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'bebas123')
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'nama_database_kamu'
+
+mysql = MySQL(app)
 
 # ================== DATABASE ==================
 def get_db():
@@ -272,6 +279,30 @@ def update_status(id, status):
 
     except Exception as e:
         return f"UPDATE ERROR: {str(e)}"
+    
+@app.route('/batal_peminjaman/<int:id>', methods=['POST'])
+def batal_peminjaman(id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    cursor = mysql.connection.cursor()
+
+    # Cek status peminjaman
+    cursor.execute("SELECT status FROM peminjaman WHERE id = %s AND user_id = %s", (id, session['user_id']))
+    data = cursor.fetchone()
+
+    if data:
+        status = data[0]
+
+        if status == 'pending':
+            cursor.execute("UPDATE peminjaman SET status='dibatalkan' WHERE id=%s", (id,))
+            mysql.connection.commit()
+            flash('Peminjaman berhasil dibatalkan!', 'success')
+        else:
+            flash('Peminjaman tidak bisa dibatalkan!', 'danger')
+
+    cursor.close()
+    return redirect(url_for('dashboard_user')) 
     
 # ================== LOGOUT ==================
 @app.route('/logout')
