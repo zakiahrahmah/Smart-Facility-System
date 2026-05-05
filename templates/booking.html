@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ===== HEADER ===== -->
+    <div class="mb-4 p-4 rounded-4 text-white" style="background: linear-gradient(90deg,#2563eb,#1d4ed8);">
+        <h4><i class="fas fa-calendar-check"></i> Booking Fasilitas</h4>
+        <small>Ajukan peminjaman fasilitas</small>
+    </div>
+
+    <!-- ===== FORM BOOKING ===== -->
+    <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-body">
+
+            <form action="{{ url_for('pinjam') }}" method="POST">
+
+                <!-- FASILITAS -->
+                <div class="mb-3">
+                    <label>Fasilitas</label>
+                    <select name="fasilitas_id" class="form-control" required>
+                        {% for f in fasilitas %}
+                        <option value="{{ f.id }}">
+                            {{ f.nama_fasilitas }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- JUMLAH -->
+                <div class="mb-3">
+                    <input type="number" name="jumlah" class="form-control" placeholder="Jumlah" required>
+                </div>
+
+                <!-- TANGGAL -->
+                <div class="mb-3">
+                    <input type="date" name="tanggal" class="form-control" required>
+                </div>
+
+                <!-- WAKTU -->
+                <div class="mb-3">
+                    <input type="time" name="waktu_mulai" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <input type="time" name="waktu_selesai" class="form-control" required>
+                </div>
+
+                <!-- KETERANGAN -->
+                <div class="mb-3">
+                    <textarea name="keterangan" class="form-control" placeholder="Keterangan"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Ajukan Booking
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- ===== RIWAYAT ===== -->
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-body">
+
+            <h5><i class="fas fa-history"></i> Riwayat Peminjaman</h5>
+
+            <div class="table-responsive">
+                <table class="table table-bordered mt-3">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fasilitas</th>
+                            <th>Tanggal</th>
+                            <th>Waktu</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for r in riwayat %}
+                        <tr>
+                            <td>{{ r.nama_fasilitas }}</td>
+                            <td>{{ r.tanggal_pinjam }}</td>
+                            <td>{{ r.waktu_mulai }} - {{ r.waktu_selesai }}</td>
+
+                            <!-- STATUS -->
+                            <td>
+                                {% if r.status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% elif r.status == 'disetujui' %}
+                                    <span class="badge bg-success">Disetujui</span>
+                                {% elif r.status == 'ditolak' %}
+                                    <span class="badge bg-danger">Ditolak</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ r.status }}</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- AKSI -->
+                            <td>
+                                {% if r.status == 'pending' %}
+                                <form action="{{ url_for('batal_peminjaman', id=r.id) }}" method="POST" style="display:inline;">
+                                    <button class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Yakin mau dibatalkan?')">
+                                        Batal
+                                    </button>
+                                </form>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
