@@ -1,0 +1,419 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+/* ===== BODY ===== */
+body{
+    background: #f4f7fe;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar-modern{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(180deg,#0b1f3a,#132b4f);
+    padding: 20px;
+}
+
+.sidebar-modern .brand{
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.sidebar-modern .brand span{
+    color: #60a5fa;
+}
+
+.sidebar-modern a{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.sidebar-modern a:hover{
+    background: #2563eb;
+    color: white;
+}
+
+.sidebar-modern a.active{
+    background: #2563eb;
+    color: white;
+}
+
+/* ===== MAIN ===== */
+.main-modern{
+    margin-left: 270px;
+    padding: 25px;
+}
+
+/* ===== HEADER ===== */
+.header-riwayat{
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    color: white;
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(37,99,235,0.2);
+}
+
+/* ===== CARD ===== */
+.card-modern{
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+/* ===== RIWAYAT CARD ===== */
+.riwayat-card{
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+    transition: 0.3s;
+    background: white;
+    height: 100%;
+}
+
+.riwayat-card:hover{
+    transform: translateY(-5px);
+}
+
+.riwayat-top{
+    background: linear-gradient(135deg,#2563eb,#3b82f6);
+    height: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.riwayat-top i{
+    font-size: 55px;
+    color: white;
+}
+
+.badge-modern{
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-modern{
+    border-radius: 10px;
+    padding: 7px 14px;
+    font-weight: 500;
+}
+
+/* ===== SEARCH ===== */
+.search-box{
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width: 992px){
+
+    .sidebar-modern{
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .main-modern{
+        margin-left: 0;
+    }
+
+}
+
+</style>
+
+<!-- ===================== -->
+<!-- SIDEBAR -->
+<!-- ===================== -->
+<div class="sidebar-modern">
+
+    <div class="brand">
+        <i class="fas fa-building"></i>
+        Smart <span>Facility</span>
+    </div>
+
+    <a href="{{ url_for('dashboard') }}">
+        <i class="fas fa-home"></i>
+        Dashboard
+    </a>
+
+    <a href="{{ url_for('dashboard') }}">
+        <i class="fas fa-building"></i>
+        Fasilitas
+    </a>
+
+    <a href="{{ url_for('riwayat_user') }}" class="active">
+        <i class="fas fa-history"></i>
+        Riwayat
+    </a>
+
+    <a href="{{ url_for('logout') }}">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+    </a>
+
+</div>
+
+<!-- ===================== -->
+<!-- MAIN -->
+<!-- ===================== -->
+<div class="main-modern">
+
+    <!-- HEADER -->
+    <div class="header-riwayat">
+
+        <h2 class="fw-bold">
+            <i class="fas fa-history"></i>
+            Riwayat Peminjaman
+        </h2>
+
+        <p class="mb-0">
+            Lihat seluruh riwayat booking fasilitas Anda
+        </p>
+
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+
+        <div class="row">
+
+            <div class="col-md-10 mb-2">
+
+                <input
+                    type="text"
+                    id="searchRiwayat"
+                    class="form-control"
+                    placeholder="Cari fasilitas...">
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-primary w-100 btn-modern">
+                    <i class="fas fa-search"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- LIST RIWAYAT -->
+    <div class="row" id="riwayatContainer">
+
+        {% for r in riwayat %}
+
+        <div class="col-md-4 mb-4 riwayat-item">
+
+            <div class="riwayat-card shadow-sm">
+
+                <!-- TOP -->
+                <div class="riwayat-top">
+
+                    <i class="fas fa-building"></i>
+
+                </div>
+
+                <!-- BODY -->
+                <div class="p-3">
+
+                    <!-- STATUS -->
+                    {% if r.status|lower == 'pending' %}
+
+                        <span class="badge bg-warning text-dark badge-modern">
+                            Pending
+                        </span>
+
+                    {% elif r.status|lower == 'disetujui' %}
+
+                        <span class="badge bg-success badge-modern">
+                            Disetujui
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger badge-modern">
+                            Ditolak
+                        </span>
+
+                    {% endif %}
+
+                    <h5 class="fw-bold mt-3">
+                        {{ r.nama_fasilitas }}
+                    </h5>
+
+                    <div class="text-muted small mb-1">
+                        <i class="fas fa-calendar"></i>
+                        {{ r.tanggal_pinjam }}
+                    </div>
+
+                    <div class="text-muted small mb-1">
+                        <i class="fas fa-clock"></i>
+                        {{ r.waktu_mulai }} - {{ r.waktu_selesai }}
+                    </div>
+
+                    <div class="small mb-1">
+                        <strong>Jumlah:</strong>
+                        {{ r.jumlah }}
+                    </div>
+
+                    <div class="small text-muted mb-3">
+
+                        <strong>Keterangan:</strong><br>
+
+                        {{ r.keterangan if r.keterangan else 'Tidak ada keterangan' }}
+
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div class="d-flex justify-content-between">
+
+                        <button
+                            class="btn btn-primary btn-sm btn-modern"
+                            data-bs-toggle="modal"
+                            data-bs-target="#detailModal{{ r.id }}">
+
+                            <i class="fas fa-eye"></i>
+                            Detail
+
+                        </button>
+
+                        {% if r.status|lower == 'pending' %}
+
+                        <form
+                            action="{{ url_for('batal_peminjaman', id=r.id) }}"
+                            method="POST">
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger btn-sm btn-modern"
+                                onclick="return confirm('Batalkan peminjaman ini?')">
+
+                                <i class="fas fa-times"></i>
+
+                            </button>
+
+                        </form>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- MODAL DETAIL -->
+        <div class="modal fade" id="detailModal{{ r.id }}" tabindex="-1">
+
+            <div class="modal-dialog">
+
+                <div class="modal-content card-modern">
+
+                    <div class="modal-header bg-primary text-white">
+
+                        <h5 class="modal-title">
+
+                            Detail Peminjaman
+
+                        </h5>
+
+                        <button
+                            type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal">
+                        </button>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <p>
+                            <strong>Fasilitas:</strong>
+                            {{ r.nama_fasilitas }}
+                        </p>
+
+                        <p>
+                            <strong>Tanggal:</strong>
+                            {{ r.tanggal_pinjam }}
+                        </p>
+
+                        <p>
+                            <strong>Waktu:</strong>
+                            {{ r.waktu_mulai }} - {{ r.waktu_selesai }}
+                        </p>
+
+                        <p>
+                            <strong>Jumlah:</strong>
+                            {{ r.jumlah }}
+                        </p>
+
+                        <p>
+                            <strong>Keterangan:</strong><br>
+                            {{ r.keterangan if r.keterangan else 'Tidak ada keterangan' }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- SEARCH SCRIPT -->
+<script>
+
+const searchInput = document.getElementById('searchRiwayat');
+
+searchInput.addEventListener('keyup', function(){
+
+    const keyword = this.value.toLowerCase();
+
+    document.querySelectorAll('.riwayat-item').forEach(item => {
+
+        const text = item.innerText.toLowerCase();
+
+        if(text.includes(keyword)){
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

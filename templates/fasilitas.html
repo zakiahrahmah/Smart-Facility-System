@@ -1,37 +1,625 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card shadow">
-    <div class="card-header bg-info text-white">
-        <h5><i class="fas fa-list"></i> Semua Fasilitas</h5>
+
+<style>
+
+/* ===== BODY ===== */
+body{
+    background: #f4f7fe;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar-modern{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(180deg,#0b1f3a,#132b4f);
+    padding: 20px;
+}
+
+.sidebar-modern .brand{
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.sidebar-modern .brand span{
+    color: #60a5fa;
+}
+
+.sidebar-modern a{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.sidebar-modern a:hover{
+    background: #2563eb;
+    color: white;
+}
+
+.sidebar-modern a.active{
+    background: #2563eb;
+    color: white;
+}
+
+/* ===== MAIN ===== */
+.main-modern{
+    margin-left: 270px;
+    padding: 25px;
+}
+
+/* ===== HEADER ===== */
+.header-box{
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    color: white;
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(37,99,235,0.2);
+}
+
+/* ===== SEARCH ===== */
+.search-box{
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+/* ===== CARD FASILITAS ===== */
+.facility-card{
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: 0.3s;
+    border: none;
+    height: 100%;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+.facility-card:hover{
+    transform: translateY(-5px);
+}
+
+.facility-top{
+    background: linear-gradient(135deg,#2563eb,#3b82f6);
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.facility-top i{
+    font-size: 70px;
+    color: white;
+}
+
+.badge-modern{
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-modern{
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-weight: 500;
+}
+
+/* ===== STATUS ===== */
+.status-available{
+    color: #10b981;
+    font-weight: 600;
+}
+
+.status-empty{
+    color: #ef4444;
+    font-weight: 600;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:992px){
+
+    .sidebar-modern{
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .main-modern{
+        margin-left: 0;
+    }
+
+}
+
+</style>
+
+<!-- ===================== -->
+<!-- SIDEBAR -->
+<!-- ===================== -->
+<div class="sidebar-modern">
+
+    <div class="brand">
+        <i class="fas fa-building"></i>
+        Smart <span>Facility</span>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Kode</th>
-                        <th>Nama</th>
-                        <th>Kategori</th>
-                        <th>Deskripsi</th>
-                        <th>Stok</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for f in fasilitas %}
-                    <tr>
-                        <td>{{ f.kode_fasilitas }}</td>
-                        <td>{{ f.nama_fasilitas }}</td>
-                        <td>{{ f.kategori }}</td>
-                        <td>{{ f.deskripsi[:50] }}...</td>
-                        <td>{{ f.jumlah_tersedia }}/{{ f.jumlah_stok }}</td>
-                        <td>{% if f.jumlah_tersedia > 0 %}✅ Tersedia{% else %}❌ Habis{% endif %}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+
+    <a href="{{ url_for('dashboard') }}">
+        <i class="fas fa-home"></i>
+        Dashboard
+    </a>
+
+    <a href="{{ url_for('fasilitas') }}" class="active">
+        <i class="fas fa-building"></i>
+        Fasilitas
+    </a>
+
+    <a href="{{ url_for('riwayat_user') }}">
+        <i class="fas fa-history"></i>
+        Riwayat
+    </a>
+
+    <a href="{{ url_for('logout') }}">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+    </a>
+
 </div>
+
+<!-- ===================== -->
+<!-- MAIN -->
+<!-- ===================== -->
+<div class="main-modern">
+
+    <!-- HEADER -->
+    <div class="header-box">
+
+        <h2 class="fw-bold">
+            <i class="fas fa-building"></i>
+            Daftar Fasilitas
+        </h2>
+
+        <p class="mb-0">
+            Pilih dan lihat seluruh fasilitas yang tersedia
+        </p>
+
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+
+        <div class="row">
+
+            <div class="col-md-10 mb-2">
+
+                <input
+                    type="text"
+                    id="searchFacility"
+                    class="form-control"
+                    placeholder="Cari fasilitas...">
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button class="btn btn-primary w-100 btn-modern">
+                    <i class="fas fa-search"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- LIST FASILITAS -->
+    <div class="row" id="facilityContainer">
+
+        {% for f in fasilitas %}
+
+        <div class="col-md-4 mb-4 facility-item">
+
+            <div class="facility-card">
+
+                <!-- TOP -->
+                <div class="facility-top">
+
+                    {% if f.kategori|lower == 'ruangan' %}
+                        <i class="fas fa-door-open"></i>
+
+                    {% elif f.kategori|lower == 'lab' %}
+                        <i class="fas fa-desktop"></i>
+
+                    {% elif f.kategori|lower == 'alat' %}
+                        <i class="fas fa-microphone"></i>
+
+                    {% else %}
+                        <i class="fas fa-building"></i>
+                    {% endif %}
+
+                </div>
+
+                <!-- BODY -->
+                <div class="p-4">
+
+                    <!-- KATEGORI -->
+                    <span class="badge bg-primary badge-modern">
+                        {{ f.kategori }}
+                    </span>
+
+                    <!-- NAMA -->
+                    <h5 class="fw-bold mt-3">
+                        {{ f.nama_fasilitas }}
+                    </h5>
+
+                    <!-- DESKRIPSI -->
+                    <p class="text-muted small">
+
+                        {{ f.deskripsi[:90] }}
+
+                        {% if f.deskripsi|length > 90 %}
+                            ...
+                        {% endif %}
+
+                    </p>
+
+                    <!-- STOK -->
+                    <div class="mb-2">
+
+                        <strong>Stok:</strong>
+
+                        {{ f.jumlah_tersedia }}/{{ f.jumlah_stok }}
+
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="mb-3">
+
+                        {% if f.jumlah_tersedia > 0 %}
+
+                            <span class="status-available">
+                                <i class="fas fa-check-circle"></i>
+                                Tersedia
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-empty">
+                                <i class="fas fa-times-circle"></i>
+                                Stok Habis
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div class="d-flex justify-content-between">
+
+                        <!-- DETAIL -->
+                        <button
+                            class="btn btn-outline-primary btn-sm btn-modern"
+                            data-bs-toggle="modal"
+                            data-bs-target="#detailModal{{ f.id }}">
+
+                            <i class="fas fa-eye"></i>
+                            Detail
+
+                        </button>
+
+                        <!-- PINJAM -->
+                        {% if f.jumlah_tersedia > 0 %}
+
+                        <button
+                            class="btn btn-primary btn-sm btn-modern btn-pinjam"
+                            data-id="{{ f.id }}"
+                            data-nama="{{ f.nama_fasilitas }}">
+
+                            <i class="fas fa-calendar-plus"></i>
+                            Pinjam
+
+                        </button>
+
+                        {% else %}
+
+                        <button
+                            class="btn btn-secondary btn-sm btn-modern"
+                            disabled>
+
+                            <i class="fas fa-times"></i>
+                            Habis
+
+                        </button>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================== -->
+        <!-- MODAL DETAIL -->
+        <!-- ===================== -->
+        <div class="modal fade" id="detailModal{{ f.id }}" tabindex="-1">
+
+            <div class="modal-dialog">
+
+                <div class="modal-content">
+
+                    <div class="modal-header bg-primary text-white">
+
+                        <h5 class="modal-title">
+                            Detail Fasilitas
+                        </h5>
+
+                        <button
+                            type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal">
+                        </button>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <h5 class="fw-bold">
+                            {{ f.nama_fasilitas }}
+                        </h5>
+
+                        <p>
+                            {{ f.deskripsi }}
+                        </p>
+
+                        <p>
+                            <strong>Kategori:</strong>
+                            {{ f.kategori }}
+                        </p>
+
+                        <p>
+                            <strong>Stok:</strong>
+                            {{ f.jumlah_tersedia }}/{{ f.jumlah_stok }}
+                        </p>
+
+                        <p>
+                            <strong>Kode:</strong>
+                            {{ f.kode_fasilitas }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- ===================== -->
+<!-- MODAL PINJAM -->
+<!-- ===================== -->
+<div class="modal fade" id="pinjamModal" tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+
+                <h5 class="modal-title">
+
+                    <i class="fas fa-calendar-plus"></i>
+                    Form Peminjaman
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="POST" action="{{ url_for('pinjam') }}">
+
+                <div class="modal-body">
+
+                    <input
+                        type="hidden"
+                        name="fasilitas_id"
+                        id="fasilitas_id">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Fasilitas
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="fasilitas_nama"
+                            readonly>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Jumlah
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            name="jumlah"
+                            value="1"
+                            min="1"
+                            required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Tanggal
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            id="tanggal"
+                            name="tanggal"
+                            required>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Mulai
+                            </label>
+
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="waktu_mulai"
+                                required>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Selesai
+                            </label>
+
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="waktu_selesai"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-3">
+
+                        <label class="form-label">
+                            Keterangan
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            name="keterangan"
+                            rows="2"></textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-modern"
+                        data-bs-dismiss="modal">
+
+                        Tutup
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-modern">
+
+                        Ajukan
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SEARCH -->
+<script>
+
+const searchFacility = document.getElementById('searchFacility');
+
+searchFacility.addEventListener('keyup', function(){
+
+    const keyword = this.value.toLowerCase();
+
+    document.querySelectorAll('.facility-item').forEach(item => {
+
+        const text = item.innerText.toLowerCase();
+
+        if(text.includes(keyword)){
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+
+    });
+
+});
+
+/* ===== MODAL PINJAM ===== */
+
+const today = new Date().toISOString().split('T')[0];
+
+document.getElementById('tanggal').min = today;
+
+document.querySelectorAll('.btn-pinjam').forEach(btn => {
+
+    btn.addEventListener('click', function(){
+
+        document.getElementById('fasilitas_id').value =
+            this.dataset.id;
+
+        document.getElementById('fasilitas_nama').value =
+            this.dataset.nama;
+
+        new bootstrap.Modal(
+            document.getElementById('pinjamModal')
+        ).show();
+
+    });
+
+});
+
+</script>
+
 {% endblock %}
