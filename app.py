@@ -218,13 +218,13 @@ def riwayat_user():
             ORDER BY p.id DESC
         """, (current_user.id,))
 
-        riwayat = cursor.fetchall()
+        data = cursor.fetchall()
 
         conn.close()
 
         return render_template(
             'riwayat_user.html',
-            riwayat=riwayat
+            data=data
         )
 
     except Exception as e:
