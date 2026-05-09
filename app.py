@@ -191,14 +191,23 @@ def dashboard():
         fasilitas = cursor.fetchall()
 
         cursor.execute("""
-            SELECT p.*, f.nama_fasilitas
+            SELECT 
+                p.id,
+                p.fasilitas_id,
+                p.jumlah,
+                p.tanggal_pinjam,
+                p.waktu_mulai,
+                p.waktu_selesai,
+                p.status,
+                p.keterangan,
+                f.nama_fasilitas
             FROM peminjaman p
             JOIN fasilitas f
                 ON p.fasilitas_id = f.id
             WHERE p.user_id = %s
             ORDER BY p.id DESC
-        """, (current_user.id,))
-
+         """, (current_user.id,))
+        
         riwayat = cursor.fetchall()
 
         conn.close()
