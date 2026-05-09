@@ -230,6 +230,71 @@ def riwayat_user():
     except Exception as e:
         return f"RIWAYAT ERROR: {str(e)}"
 
+# ================== HALAMAN BOOKING ==================
+@app.route('/booking')
+@login_required
+def booking():
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Ambil fasilitas
+    cursor.execute("SELECT * FROM fasilitas")
+    fasilitas = cursor.fetchall()
+
+    # Ambil riwayat booking user
+    cursor.execute("""
+        SELECT p.*, f.nama_fasilitas
+        FROM peminjaman p
+        JOIN fasilitas f ON p.fasilitas_id = f.id
+        WHERE p.user_id = %s
+        ORDER BY p.id DESC
+    """, (current_user.id,))
+
+    riwayat = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        'booking.html',
+        fasilitas=fasilitas,
+        riwayat=riwayat
+    )
+
+
+# ================== PINJAM ==================
+@app.route('/pinjam', methods=['POST'])
+@login_required
+def pinjam():
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO peminjaman 
+            (user_id, fasilitas_id, jumlah, tanggal_pinjam,
+             waktu_mulai, waktu_selesai, keterangan, status)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,'pending')
+        """, (
+            current_user.id,
+            request.form['fasilitas_id'],
+            request.form['jumlah'],
+            request.form['tanggal'],
+            request.form['waktu_mulai'],
+            request.form['waktu_selesai'],
+            request.form['keterangan']
+        ))
+
+        conn.commit()
+        conn.close()
+
+        flash("Peminjaman berhasil!", "success")
+
+        return redirect(url_for('booking'))
+
+    except Exception as e:
+        return f"PINJAM ERROR: {str(e)}"
+    
 # ================== PINJAM ==================
 @app.route('/pinjam', methods=['POST'])
 @login_required
