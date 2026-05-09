@@ -1,110 +1,198 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container-fluid mt-4">
-    <h2>Dashboard Admin</h2>
-    <p>Selamat datang, {{ current_user.nama_lengkap }}!</p>
-    
-    <!-- Statistik Cards -->
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-warning mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Pending</h5>
-                    <p class="card-text display-4">{{ pending }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Disetujui</h5>
-                    <p class="card-text display-4">{{ disetujui }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-info mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Total Fasilitas</h5>
-                    <p class="card-text display-4">{{ total_fasilitas }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Mahasiswa</h5>
-                    <p class="card-text display-4">{{ total_mahasiswa }}</p>
-                </div>
-            </div>
-        </div>
+
+<!-- ===== STYLE DASHBOARD ADMIN ===== -->
+<style>
+body{
+    background: #f4f7fe;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 260px;
+    height: 100vh;
+    background: linear-gradient(180deg,#0b1f3a,#0f2f5a,#0a1a33);
+    color: white;
+    padding: 20px;
+}
+
+.sidebar h3{
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.sidebar a{
+    display: block;
+    padding: 12px;
+    margin: 6px 0;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 10px;
+}
+
+.sidebar a:hover{
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+/* MAIN */
+.main{
+    margin-left: 270px;
+    padding: 20px;
+}
+
+/* TOPBAR */
+.topbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+/* CARD */
+.card-box{
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.stats{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.stat{
+    padding: 15px;
+    border-radius: 15px;
+    color: white;
+}
+
+.blue{background:#2563eb;}
+.green{background:#10b981;}
+.orange{background:#f59e0b;}
+.red{background:#ef4444;}
+
+/* TABLE */
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,td{
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.badge{
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: white;
+}
+
+.pending{background:#f59e0b;}
+.approved{background:#10b981;}
+.rejected{background:#ef4444;}
+
+.btn{
+    padding: 5px 8px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-approve{background:#10b981;color:white;}
+.btn-reject{background:#ef4444;color:white;}
+.btn-view{background:#3b82f6;color:white;}
+
+</style>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar">
+    <h3>🏢 Smart Facility</h3>
+    <a href="/dashboard_admin">🏠 Dashboard</a>
+    <a href="/peminjaman">📑 Peminjaman</a>
+    <a href="/fasilitas">🏫 Fasilitas</a>
+    <a href="/pengguna">👤 Pengguna</a>
+    <a href="/laporan">📊 Laporan</a>
+    <a href="/logout">🚪 Logout</a>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <h2>Dashboard Admin</h2>
+        <input type="text" placeholder="Cari sesuatu..." style="padding:8px;border-radius:10px;border:1px solid #ddd;">
     </div>
 
-    <!-- Peminjaman Pending -->
-    <div class="card mt-4">
-        <div class="card-header">
-            <h4>Peminjaman Menunggu Persetujuan</h4>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>No</th>
-                            <th>Peminjam</th>
-                            <th>Fasilitas</th>
-                            <th>Jumlah</th>
-                            <th>Tanggal</th>
-                            <th>Waktu</th>
-                            <th>Keterangan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for p in peminjaman_pending %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>
-                                <strong>{{ p.nama_lengkap }}</strong><br>
-                                <small class="text-muted">{{ p.username }}</small>
-                            </td>
-                            <td>
-                                <strong>{{ p.nama_fasilitas }}</strong><br>
-                                <small class="text-muted">{{ p.kode_fasilitas }}</small>
-                            </td>
-                            <td>{{ p.jumlah }}</td>
-                            <td>{{ p.tanggal_pinjam }}</td>
-                            <td>{{ p.waktu_mulai }} - {{ p.waktu_selesai }}</td>
-                            <td>{{ p.keterangan if p.keterangan else '-' }}</td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a href="{{ url_for('update_status', id=p.id, status='disetujui') }}" 
-                                       class="btn btn-sm btn-success"
-                                       onclick="return confirm('Setujui peminjaman ini?')">
-                                       <i class="fas fa-check"></i> Setujui
-                                    </a>
-                                    <a href="{{ url_for('update_status', id=p.id, status='ditolak') }}" 
-                                       class="btn btn-sm btn-danger"
-                                       onclick="return confirm('Tolak peminjaman ini?')">
-                                       <i class="fas fa-times"></i> Tolak
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="8" class="text-center">
-                                <div class="alert alert-info mb-0">
-                                    Tidak ada peminjaman yang menunggu persetujuan
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <!-- WELCOME -->
+    <div class="card-box" style="margin-top:20px; background: linear-gradient(135deg,#1e3a8a,#0ea5e9); color:white;">
+        <h2>Selamat datang kembali, Admin!</h2>
+        <p>Kelola peminjaman fasilitas dengan mudah dan cepat.</p>
     </div>
+
+    <!-- STATS -->
+    <div class="stats">
+        <div class="stat blue">Total<br><h3>{{ total }}</h3></div>
+        <div class="stat green">Disetujui<br><h3>{{ disetujui }}</h3></div>
+        <div class="stat orange">Pending<br><h3>{{ pending }}</h3></div>
+        <div class="stat red">Ditolak<br><h3>{{ ditolak }}</h3></div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card-box" style="margin-top:20px;">
+        <h3>Peminjaman Terbaru</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Fasilitas</th>
+                    <th>Waktu</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for p in peminjaman %}
+                <tr>
+                    <td>{{ p.nama }}</td>
+                    <td>{{ p.fasilitas }}</td>
+                    <td>{{ p.waktu }}</td>
+                    <td>
+                        {% if p.status == 'Pending' %}
+                            <span class="badge pending">Pending</span>
+                        {% elif p.status == 'Disetujui' %}
+                            <span class="badge approved">Disetujui</span>
+                        {% else %}
+                            <span class="badge rejected">Ditolak</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/view/{{ p.id }}" class="btn btn-view">👁</a>
+                        <a href="/approve/{{ p.id }}" class="btn btn-approve">✔</a>
+                        <a href="/reject/{{ p.id }}" class="btn btn-reject">✖</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </div>
+
 {% endblock %}
