@@ -12,85 +12,119 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
+   <style>
 
-        body {
-            background-color: #f4f7fe;
-        }
+    body {
+        background: #f1f5f9;
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-        /* ===== NAVBAR ===== */
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.4rem;
-        }
+    /* ================= NAVBAR ================= */
+    .navbar {
+        background: linear-gradient(135deg, #081225, #0f172a) !important;
+        padding: 14px 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
 
-        .brand-highlight {
-            color: #ffd166;
-        }
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: white !important;
+    }
 
-        .navbar {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
+    .brand-highlight {
+        color: #60a5fa;
+    }
 
-        .nav-link {
-            font-weight: 500;
-            margin-right: 10px;
-            transition: 0.3s;
-        }
+    .nav-link {
+        font-weight: 500;
+        margin-right: 8px;
+        padding: 10px 14px !important;
+        border-radius: 10px;
+        color: #cbd5e1 !important;
+        transition: 0.3s;
+    }
 
-        .nav-link:hover {
-            color: #ffd166 !important;
-        }
+    .nav-link:hover {
+        background: #1e3a8a;
+        color: white !important;
+    }
 
-        /* ===== CARD ===== */
-        .card-hover:hover {
-            transform: translateY(-5px);
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+    .dropdown-menu {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        padding: 10px;
+    }
 
-        /* ===== STATUS ===== */
-        .status-pending {
-            background-color: #ffc107;
-            color: #000;
-        }
+    .dropdown-item {
+        border-radius: 10px;
+        padding: 10px 14px;
+        transition: 0.3s;
+    }
 
-        .status-disetujui {
-            background-color: #198754;
-            color: #fff;
-        }
+    .dropdown-item:hover {
+        background: #eff6ff;
+    }
 
-        .status-ditolak {
-            background-color: #dc3545;
-            color: #fff;
-        }
+    /* ================= CARD ================= */
+    .card-hover:hover {
+        transform: translateY(-5px);
+        transition: 0.3s;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
 
-        .status-selesai {
-            background-color: #6c757d;
-            color: #fff;
-        }
+    /* ================= STATUS ================= */
+    .status-pending {
+        background-color: #facc15;
+        color: #000;
+    }
 
-        .badge-status {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-        }
+    .status-disetujui {
+        background-color: #10b981;
+        color: #fff;
+    }
 
-        /* ===== CONTENT ===== */
-        .main-content {
-            min-height: 80vh;
-        }
+    .status-ditolak {
+        background-color: #ef4444;
+        color: #fff;
+    }
 
-        /* ===== FOOTER ===== */
-        footer {
-            margin-top: 50px;
-            padding: 20px 0;
-            background-color: white;
-            text-align: center;
-            border-top: 1px solid #eaeaea;
-        }
+    .status-selesai {
+        background-color: #64748b;
+        color: #fff;
+    }
 
-    </style>
+    .badge-status {
+        padding: 6px 12px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* ================= CONTENT ================= */
+    .main-content {
+        min-height: 80vh;
+    }
+
+    /* ================= ALERT ================= */
+    .alert {
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    /* ================= FOOTER ================= */
+    footer {
+        margin-top: 50px;
+        padding: 20px 0;
+        background: #081225;
+        color: #cbd5e1;
+        text-align: center;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+</style>
 
     {% block extra_css %}{% endblock %}
 </head>

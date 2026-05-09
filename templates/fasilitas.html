@@ -6,7 +6,7 @@
 
 /* ===== BODY ===== */
 body{
-    background: #f4f7fe;
+    background: #f1f5f9;
     font-family: 'Segoe UI', sans-serif;
 }
 
@@ -17,107 +17,162 @@ body{
     left: 0;
     width: 250px;
     height: 100vh;
-    background: linear-gradient(180deg,#0b1f3a,#132b4f);
-    padding: 20px;
+    background: linear-gradient(180deg,#0ea5e9,#1e3a8a);
+    padding: 22px;
+    box-shadow: 4px 0 25px rgba(0,0,0,0.15);
 }
 
 .sidebar-modern .brand{
     color: white;
     font-size: 24px;
-    font-weight: bold;
+    font-weight: 700;
     margin-bottom: 40px;
 }
 
 .sidebar-modern .brand span{
-    color: #60a5fa;
+    color: #38bdf8;
 }
 
 .sidebar-modern a{
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 15px;
-    color: #cbd5e1;
+    padding: 13px 16px;
+    color: #e2e8f0;
     text-decoration: none;
-    border-radius: 12px;
+    border-radius: 14px;
     margin-bottom: 10px;
     transition: 0.3s;
     font-weight: 500;
 }
 
 .sidebar-modern a:hover{
-    background: #2563eb;
-    color: white;
+    background: #38bdf8;
+    color: #0f172a;
+    transform: translateX(4px);
 }
 
 .sidebar-modern a.active{
-    background: #2563eb;
+    background: linear-gradient(135deg,#38bdf8,#2563eb);
     color: white;
+    box-shadow: 0 8px 20px rgba(56,189,248,0.35);
 }
 
 /* ===== MAIN ===== */
 .main-modern{
     margin-left: 270px;
-    padding: 25px;
+    padding: 30px;
 }
 
 /* ===== HEADER ===== */
 .header-box{
-    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    background: linear-gradient(135deg,#0ea5e9,#1e40af);
     color: white;
-    padding: 25px;
-    border-radius: 20px;
+    padding: 30px;
+    border-radius: 24px;
     margin-bottom: 25px;
-    box-shadow: 0 10px 25px rgba(37,99,235,0.2);
+    box-shadow: 0 12px 30px rgba(15,23,42,0.25);
+}
+
+.header-box h2{
+    font-weight: 700;
 }
 
 /* ===== SEARCH ===== */
 .search-box{
     background: white;
-    border-radius: 18px;
+    border-radius: 20px;
     padding: 20px;
     margin-bottom: 25px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.05);
 }
 
+.search-box input{
+    border-radius: 14px;
+    padding: 12px;
+    border: 1px solid #dbeafe;
+}
+
+.search-box input:focus{
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 0.15rem rgba(14,165,233,0.2);
+}
+
 /* ===== CARD FASILITAS ===== */
 .facility-card{
     background: white;
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
     transition: 0.3s;
     border: none;
     height: 100%;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
 }
 
 .facility-card:hover{
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 18px 35px rgba(14,165,233,0.2);
 }
 
+/* ===== TOP CARD ===== */
 .facility-top{
-    background: linear-gradient(135deg,#2563eb,#3b82f6);
+    background: linear-gradient(135deg,#0ea5e9,#2563eb);
     height: 180px;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+.facility-top::before{
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
 }
 
 .facility-top i{
     font-size: 70px;
     color: white;
+    z-index: 2;
 }
 
+/* ===== BADGE ===== */
 .badge-modern{
-    border-radius: 20px;
-    padding: 6px 12px;
+    border-radius: 30px;
+    padding: 7px 14px;
     font-size: 12px;
+    background: #e0f2fe !important;
+    color: #0284c7 !important;
+    font-weight: 600;
 }
 
+/* ===== BUTTON ===== */
 .btn-modern{
-    border-radius: 10px;
-    padding: 8px 14px;
-    font-weight: 500;
+    border-radius: 12px;
+    padding: 9px 15px;
+    font-weight: 600;
+}
+
+.btn-primary{
+    background: linear-gradient(135deg,#0ea5e9,#2563eb);
+    border: none;
+}
+
+.btn-primary:hover{
+    background: linear-gradient(135deg,#0284c7,#1e40af);
+}
+
+.btn-outline-primary{
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+}
+
+.btn-outline-primary:hover{
+    background: #0ea5e9;
+    color: white;
 }
 
 /* ===== STATUS ===== */
@@ -131,6 +186,27 @@ body{
     font-weight: 600;
 }
 
+/* ===== MODAL ===== */
+.modal-content{
+    border: none;
+    border-radius: 22px;
+    overflow: hidden;
+}
+
+.modal-header{
+    background: linear-gradient(135deg,#0ea5e9,#1e40af) !important;
+}
+
+.form-control{
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.form-control:focus{
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 0.15rem rgba(14,165,233,0.2);
+}
+
 /* ===== RESPONSIVE ===== */
 @media(max-width:992px){
 
@@ -142,6 +218,7 @@ body{
 
     .main-modern{
         margin-left: 0;
+        padding: 20px;
     }
 
 }
