@@ -70,21 +70,7 @@ body{
     padding: 30px;
 }
 
-/* ================= TOPBAR ================= */
-.topbar h2{
-    font-weight: bold;
-    color: #0f172a;
-}
-
-.profile-box{
-    background: white;
-    padding: 12px 18px;
-    border-radius: 14px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
-    font-weight: 600;
-}
-
-/* ================= HERO (DISAMAKAN DENGAN HEADER FASILITAS) ================= */
+/* ================= HERO ================= */
 .hero-box{
     background: linear-gradient(135deg,#0f3b4f,#1c2954);
     color: white;
@@ -94,15 +80,6 @@ body{
     box-shadow: 0 12px 30px rgba(15,23,42,0.25);
 }
 
-.hero-box h1{
-    font-size: 38px;
-    font-weight: bold;
-}
-
-.hero-box p{
-    opacity: 0.9;
-}
-
 /* ================= CARD ================= */
 .dashboard-card{
     background: white;
@@ -110,20 +87,16 @@ body{
     padding: 25px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.06);
     border: none;
-    transition: 0.3s;
 }
 
-.dashboard-card:hover{
-    transform: translateY(-6px);
-    box-shadow: 0 18px 35px rgba(14,165,233,0.15);
+/* ================= FIX STAT BOX (WAJIB) ================= */
+.stat-box{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.dashboard-card h5{
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
-/* ================= ICON STAT (DISAMAKAN DENGAN TOP CARD FASILITAS) ================= */
+/* ================= ICON ================= */
 .stat-icon{
     width: 60px;
     height: 60px;
@@ -133,7 +106,18 @@ body{
     align-items: center;
     font-size: 24px;
     color: white;
-    background: linear-gradient(135deg,#0f3b4f,#1c2954);
+}
+
+.bg-blue{
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+}
+
+.bg-orange{
+    background: linear-gradient(135deg,#f97316,#fb923c);
+}
+
+.bg-green{
+    background: linear-gradient(135deg,#10b981,#059669);
 }
 
 /* ================= QUICK MENU ================= */
@@ -149,20 +133,9 @@ body{
     border-radius: 20px;
     padding: 25px;
     text-decoration: none;
-    transition: 0.3s;
 }
 
-.quick-item:hover{
-    transform: translateY(-4px);
-    box-shadow: 0 18px 35px rgba(14,165,233,0.2);
-}
-
-.quick-item i{
-    font-size: 30px;
-    margin-bottom: 15px;
-}
-
-/* ================= BADGE (SAMAKAN) ================= */
+/* ================= BADGE ================= */
 .badge-modern{
     padding: 7px 14px;
     border-radius: 30px;
@@ -181,7 +154,6 @@ body{
 
 /* ================= RESPONSIVE ================= */
 @media(max-width:992px){
-
     .sidebar-modern{
         position: relative;
         width: 100%;
@@ -191,7 +163,6 @@ body{
     .main-modern{
         margin-left: 0;
     }
-
 }
 
 </style>
@@ -206,176 +177,60 @@ body{
 
     <div class="menu-title">Main Menu</div>
 
-    <a href="{{ url_for('dashboard') }}" class="active">
-        <i class="fas fa-home"></i>
-        Dashboard
-    </a>
-
-    <a href="{{ url_for('fasilitas') }}">
-        <i class="fas fa-building"></i>
-        Fasilitas
-    </a>
-
-    <a href="{{ url_for('booking') }}">
-        <i class="fas fa-calendar-check"></i>
-        Booking
-    </a>
-
-    <a href="{{ url_for('riwayat_user') }}">
-        <i class="fas fa-history"></i>
-        Riwayat
-    </a>
-
-    <a href="{{ url_for('logout') }}">
-        <i class="fas fa-sign-out-alt"></i>
-        Logout
-    </a>
+    <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a>
+    <a href="{{ url_for('fasilitas') }}">Fasilitas</a>
+    <a href="{{ url_for('booking') }}">Booking</a>
+    <a href="{{ url_for('riwayat_user') }}">Riwayat</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
 
 </div>
 
 <!-- ================= MAIN ================= -->
 <div class="main-modern">
 
-    <!-- TOPBAR -->
-    <div class="topbar">
-
-        <div>
-            <h2>Dashboard User</h2>
-            <small class="text-muted">
-                Selamat datang kembali
-            </small>
-        </div>
-
-        <div class="profile-box">
-            <i class="fas fa-user-circle"></i>
-            {{ current_user.nama_lengkap }}
-        </div>
-
-    </div>
-
     <!-- HERO -->
     <div class="hero-box">
-
-        <h1>
-            Halo, {{ current_user.nama_lengkap }}
-        </h1>
-
-        <p class="mt-3">
-            Kelola booking fasilitas kampus dengan mudah dan cepat.
-        </p>
-
+        <h1>Halo, {{ current_user.nama_lengkap }}</h1>
+        <p>Kelola booking fasilitas dengan mudah.</p>
     </div>
 
-    <!-- STATISTIK -->
+    <!-- STAT -->
     <div class="row mb-4">
 
-        <div class="col-md-4 mb-3">
-
+        <div class="col-md-4">
             <div class="dashboard-card">
-
                 <div class="stat-box">
-
                     <div>
-                        <small class="text-muted">
-                            Total Booking
-                        </small>
-
-                        <h2 class="fw-bold">
-                            {{ riwayat|length }}
-                        </h2>
+                        <small>Total Booking</small>
+                        <h2>{{ riwayat|length }}</h2>
                     </div>
-
-                    <div class="stat-icon bg-blue">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-
+                    <div class="stat-icon bg-blue">📅</div>
                 </div>
-
             </div>
-
         </div>
 
-        <div class="col-md-4 mb-3">
-
+        <div class="col-md-4">
             <div class="dashboard-card">
-
                 <div class="stat-box">
-
                     <div>
-                        <small class="text-muted">
-                            Total Fasilitas
-                        </small>
-
-                        <h2 class="fw-bold">
-                            {{ fasilitas|length }}
-                        </h2>
+                        <small>Total Fasilitas</small>
+                        <h2>{{ fasilitas|length }}</h2>
                     </div>
-
-                    <div class="stat-icon bg-orange">
-                        <i class="fas fa-building"></i>
-                    </div>
-
+                    <div class="stat-icon bg-orange">🏢</div>
                 </div>
-
             </div>
-
         </div>
 
-        <div class="col-md-4 mb-3">
-
+        <div class="col-md-4">
             <div class="dashboard-card">
-
                 <div class="stat-box">
-
                     <div>
-                        <small class="text-muted">
-                            Role
-                        </small>
-
-                        <h2 class="fw-bold">
-                            {{ current_user.role|upper }}
-                        </h2>
+                        <small>Role</small>
+                        <h2>{{ current_user.role|upper }}</h2>
                     </div>
-
-                    <div class="stat-icon bg-green">
-                        <i class="fas fa-user"></i>
-                    </div>
-
+                    <div class="stat-icon bg-green">👤</div>
                 </div>
-
             </div>
-
-        </div>
-
-    </div>
-
-    <!-- QUICK MENU -->
-    <div class="dashboard-card mb-4">
-
-        <h5>
-            Quick Access
-        </h5>
-
-        <div class="quick-menu">
-
-            <a href="{{ url_for('booking') }}" class="quick-item">
-                <i class="fas fa-calendar-plus"></i>
-                <h6>Booking</h6>
-                <small>Ajukan peminjaman fasilitas</small>
-            </a>
-
-            <a href="{{ url_for('fasilitas') }}" class="quick-item">
-                <i class="fas fa-building"></i>
-                <h6>Fasilitas</h6>
-                <small>Lihat seluruh fasilitas</small>
-            </a>
-
-            <a href="{{ url_for('riwayat_user') }}" class="quick-item">
-                <i class="fas fa-history"></i>
-                <h6>Riwayat</h6>
-                <small>Cek status peminjaman</small>
-            </a>
-
         </div>
 
     </div>
@@ -383,104 +238,47 @@ body{
     <!-- RIWAYAT -->
     <div class="dashboard-card">
 
-        <h5>
-            Riwayat Booking Terbaru
-        </h5>
+        <h5>Riwayat Booking Terbaru</h5>
 
-        <div class="scroll-area">
+        {% for r in riwayat[:5] %}
 
-            {% if riwayat %}
+        <div class="riwayat-item">
 
-                {% for r in riwayat[:5] %}
+            <div class="d-flex justify-content-between">
 
-                <div class="riwayat-item">
+                <div>
+                    <div class="fw-bold">{{ r.nama_fasilitas }}</div>
+                    <small class="text-muted">{{ r.tanggal_pinjam }}</small>
+                </div>
 
-                    <div class="d-flex justify-content-between">
+                <div>
 
-                        <div>
+                    {% set status = (r.status if r.status is defined else r.keterangan if r.keterangan is defined else '')|lower %}
 
-                            <div class="fw-bold">
-                                {{ r.nama_fasilitas }}
-                            </div>
+                    {% if status == 'pending' %}
+                        <span class="badge-modern" style="background:#facc15;color:#000;">Pending</span>
 
-                            <small class="text-muted">
-                                {{ r.tanggal_pinjam }}
-                            </small>
+                    {% elif status == 'disetujui' %}
+                        <span class="badge-modern" style="background:#10b981;color:#fff;">Disetujui</span>
 
-                        </div>
+                    {% elif status == 'dibatalkan' %}
+                        <span class="badge-modern" style="background:#64748b;color:#fff;">Dibatalkan</span>
 
-                        <div>
-
-                            {% if r.status|lower == 'pending' %}
-
-                                <span class="badge bg-warning text-dark badge-modern">
-                                    Pending
-                                </span>
-
-                            {% elif r.status|lower == 'disetujui' %}
-
-                                <span class="badge bg-success badge-modern">
-                                    Disetujui
-                                </span>
-
-                            {% elif r.status|lower == 'dibatalkan' %}
-
-                                <span class="badge bg-secondary badge-modern">
-                                    Dibatalkan
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge bg-danger badge-modern">
-                                    Ditolak
-                                </span>
-
-                            {% endif %}
-
-                        </div>
-
-                    </div>
-
-                    <div class="mt-2">
-                        {{ r.waktu_mulai }} - {{ r.waktu_selesai }}
-                    </div>
-
-                    {% if r.status|lower == 'pending' %}
-
-                    <form action="{{ url_for('batal_peminjaman', id=r.id) }}"
-                          method="POST"
-                          class="mt-3">
-
-                        <button class="btn btn-danger btn-sm">
-
-                            <i class="fas fa-times"></i>
-                            Batalkan
-
-                        </button>
-
-                    </form>
-
+                    {% else %}
+                        <span class="badge-modern" style="background:#ef4444;color:#fff;">Ditolak</span>
                     {% endif %}
 
                 </div>
 
-                {% endfor %}
-
-            {% else %}
-
-            <div class="text-center text-muted py-4">
-
-                <i class="fas fa-folder-open fa-3x mb-3"></i>
-
-                <p>
-                    Belum ada riwayat booking.
-                </p>
-
             </div>
 
-            {% endif %}
+            <div class="text-muted mt-2">
+                {{ r.waktu_mulai }} - {{ r.waktu_selesai }}
+            </div>
 
         </div>
+
+        {% endfor %}
 
     </div>
 
