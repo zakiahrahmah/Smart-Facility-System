@@ -173,6 +173,62 @@ def dashboard():
     except Exception as e:
         print("DASHBOARD ERROR:", e)
         return f"ERROR: {str(e)}"
+    
+# ================== HALAMAN FASILITAS ==================
+@app.route('/fasilitas')
+@login_required
+def fasilitas():
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT * FROM fasilitas
+        """)
+
+        fasilitas = cursor.fetchall()
+
+        conn.close()
+
+        return render_template(
+            'fasilitas.html',
+            fasilitas=fasilitas
+        )
+
+    except Exception as e:
+        return f"FASILITAS ERROR: {str(e)}"
+
+
+# ================== HALAMAN RIWAYAT ==================
+@app.route('/riwayat')
+@login_required
+def riwayat_user():
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT p.*, f.nama_fasilitas
+            FROM peminjaman p
+            JOIN fasilitas f
+                ON p.fasilitas_id = f.id
+            WHERE p.user_id = %s
+            ORDER BY p.id DESC
+        """, (current_user.id,))
+
+        riwayat = cursor.fetchall()
+
+        conn.close()
+
+        return render_template(
+            'riwayat_user.html',
+            riwayat=riwayat
+        )
+
+    except Exception as e:
+        return f"RIWAYAT ERROR: {str(e)}"
 
 # ================== PINJAM ==================
 @app.route('/pinjam', methods=['POST'])
