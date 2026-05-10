@@ -611,6 +611,112 @@ def laporan_admin():
         laporan=laporan
     )
 
+# ================= TAMBAH FASILITAS =================
+@app.route('/tambah_fasilitas', methods=['POST'])
+@login_required
+def tambah_fasilitas():
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    nama = request.form['nama_fasilitas']
+    kategori = request.form['kategori']
+    kode = request.form['kode']
+    status = request.form['status']
+    stok = request.form['stok']
+
+    cursor.execute("""
+        INSERT INTO fasilitas
+        (
+            nama_fasilitas,
+            kategori,
+            kode,
+            status,
+            stok,
+            stok_tersedia
+        )
+        VALUES (%s,%s,%s,%s,%s)
+    """, (
+        nama,
+        kategori,
+        kode,
+        status, 
+        stok,
+        stok
+    ))
+
+    conn.commit()
+    conn.close()
+
+    flash("Fasilitas berhasil ditambahkan!", "success")
+
+    return redirect(url_for('admin_fasilitas'))
+
+# ================= HAPUS FASILITAS =================
+@app.route('/hapus_fasilitas/<int:id>')
+@login_required
+def hapus_fasilitas(id):
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM fasilitas
+        WHERE id=%s
+    """, (id,))
+
+    conn.commit()
+    conn.close()
+
+    flash("Fasilitas berhasil dihapus!", "success")
+
+    return redirect(url_for('admin_fasilitas'))
+
+# ================= EDIT FASILITAS =================
+@app.route('/edit_fasilitas/<int:id>', methods=['POST'])
+@login_required
+def edit_fasilitas(id):
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    nama = request.form['nama_fasilitas']
+    kategori = request.form['kategori']
+    kode = request.form['kode']
+    stok = request.form['stok']
+
+    cursor.execute("""
+        UPDATE fasilitas
+        SET
+            nama_fasilitas=%s,
+            kategori=%s,
+            kode=%s,
+            stok=%s
+        WHERE id=%s
+    """, (
+        nama,
+        kategori,
+        kode,
+        stok,
+        id
+    ))
+
+    conn.commit()
+    conn.close()
+
+    flash("Fasilitas berhasil diupdate!", "success")
+
+    return redirect(url_for('admin_fasilitas'))
+
 # ================== UPDATE STATUS ==================
 @app.route('/update_status/<int:id>/<status>')
 @login_required

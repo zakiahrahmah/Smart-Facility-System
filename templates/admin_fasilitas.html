@@ -51,6 +51,7 @@
 
 .table td{
     padding:18px 16px;
+    vertical-align:middle;
 }
 
 /* ACTION */
@@ -76,6 +77,7 @@
 
     <div>
         <h1 class="title">Data Fasilitas</h1>
+
         <p class="subtitle">
             Kelola seluruh fasilitas kampus.
         </p>
@@ -84,7 +86,9 @@
     <button class="add-btn"
             data-bs-toggle="modal"
             data-bs-target="#modalTambah">
+
         Tambah Fasilitas
+
     </button>
 
 </div>
@@ -94,13 +98,16 @@
     <table class="table align-middle">
 
         <thead>
+
             <tr>
                 <th>No</th>
                 <th>Nama Fasilitas</th>
-                <th>Lokasi</th>
+                <th>Kategori</th>
+                <th>Kode</th>
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>
+
         </thead>
 
         <tbody>
@@ -111,35 +118,263 @@
 
                 <td>{{ loop.index }}</td>
 
-                <td>{{ f.nama_fasilitas }}</td>
+                <td>
 
-                <td>{{ f.lokasi }}</td>
+                    <strong>
+                        {{ f.nama_fasilitas }}
+                    </strong>
 
-                <td>{{ f.status }}</td>
+                </td>
+
+                <td>
+
+                    {{ f.kategori }}
+
+                </td>
+
+                <td>
+
+                    <span class="badge bg-primary">
+                        {{ f.kode }}
+                    </span>
+
+                </td>
+
+                <td>
+
+                    {% if f.status == 'tersedia' %}
+
+                    <span class="badge bg-success">
+                        Tersedia
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-danger">
+                        Tidak Tersedia
+                    </span>
+
+                    {% endif %}
+
+                </td>
 
                 <td>
 
                     <button class="action-btn edit"
                             data-bs-toggle="modal"
                             data-bs-target="#edit{{ f.id }}">
+
                         Edit
+
                     </button>
 
-                    <a href="/hapus_fasilitas/{{ f.id }}">
+                    <a href="{{ url_for('hapus_fasilitas', id=f.id) }}">
+
                         <button class="action-btn delete">
                             Hapus
                         </button>
+
                     </a>
 
                 </td>
 
             </tr>
 
+            <!-- MODAL EDIT -->
+            <div class="modal fade"
+                 id="edit{{ f.id }}"
+                 tabindex="-1">
+
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+
+                        <form method="POST"
+                              action="{{ url_for('edit_fasilitas', id=f.id) }}">
+
+                            <div class="modal-header">
+
+                                <h5 class="modal-title">
+                                    Edit Fasilitas
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal">
+                                </button>
+
+                            </div>
+
+                            <div class="modal-body">
+
+                                <label class="mb-2">
+                                    Nama Fasilitas
+                                </label>
+
+                                <input type="text"
+                                       name="nama_fasilitas"
+                                       class="form-control mb-3"
+                                       value="{{ f.nama_fasilitas }}">
+
+                                <label class="mb-2">
+                                    Kategori
+                                </label>
+
+                                <input type="text"
+                                       name="kategori"
+                                       class="form-control mb-3"
+                                       value="{{ f.kategori }}">
+
+                                <label class="mb-2">
+                                    Kode
+                                </label>
+
+                                <input type="text"
+                                       name="kode"
+                                       class="form-control mb-3"
+                                       value="{{ f.kode }}">
+
+                                <label class="mb-2">
+                                    Status
+                                </label>
+
+                                <select name="status"
+                                        class="form-control">
+
+                                    <option value="tersedia"
+                                    {% if f.status == 'tersedia' %}
+                                    selected
+                                    {% endif %}>
+                                        Tersedia
+                                    </option>
+
+                                    <option value="tidak tersedia"
+                                    {% if f.status == 'tidak tersedia' %}
+                                    selected
+                                    {% endif %}>
+                                        Tidak Tersedia
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button type="submit"
+                                        class="btn btn-primary">
+
+                                    Simpan Perubahan
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
             {% endfor %}
 
         </tbody>
 
     </table>
+
+</div>
+
+<!-- MODAL TAMBAH -->
+<div class="modal fade"
+     id="modalTambah"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <form method="POST"
+                  action="{{ url_for('tambah_fasilitas') }}">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Tambah Fasilitas
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <label class="mb-2">
+                        Nama Fasilitas
+                    </label>
+
+                    <input type="text"
+                           name="nama_fasilitas"
+                           class="form-control mb-3"
+                           placeholder="Masukkan nama fasilitas">
+
+                    <label class="mb-2">
+                        Kategori
+                    </label>
+
+                    <input type="text"
+                           name="kategori"
+                           class="form-control mb-3"
+                           placeholder="Contoh: Elektronik">
+
+                    <label class="mb-2">
+                        Kode Fasilitas
+                    </label>
+
+                    <input type="text"
+                           name="kode"
+                           class="form-control mb-3"
+                           placeholder="Contoh: LP001">
+
+                    <label class="mb-2">
+                        Status
+                    </label>
+
+                    <select name="status"
+                            class="form-control mb-3">
+
+                        <option value="tersedia">
+                            Tersedia
+                        </option>
+
+                        <option value="tidak tersedia">
+                            Tidak Tersedia
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        Simpan
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
 
 </div>
 

@@ -153,19 +153,27 @@
 
                 <td>
 
-                    <a href="/setujui/{{ p.id }}">
+                    <a href="{{ url_for('update_status',
+                                        id=p.id,
+                                        status='disetujui') }}">
+
                         <button class="action-btn btn-approve">
                             Setujui
                         </button>
+
                     </a>
 
-                    <a href="/tolak/{{ p.id }}">
+                    <a href="{{ url_for('update_status',
+                                        id=p.id,
+                                        status='ditolak') }}">
+
                         <button class="action-btn btn-reject">
                             Tolak
                         </button>
-                    </a>
 
-                </td>
+    </a>
+
+</td>
 
             </tr>
 
