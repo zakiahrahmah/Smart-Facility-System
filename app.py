@@ -446,6 +446,13 @@ def admin_dashboard():
             WHERE status='disetujui'
         """)
         disetujui = cursor.fetchone()['total']
+                
+        cursor.execute("""
+            SELECT COUNT(*) as total
+            FROM peminjaman
+            WHERE status='ditolak'
+        """)
+        ditolak = cursor.fetchone()['total']
 
         cursor.execute("""
             SELECT COUNT(*) as total
@@ -483,6 +490,7 @@ def admin_dashboard():
             'admin_dashboard.html',
             pending=pending,
             disetujui=disetujui,
+            ditolak=ditolak,
             total_fasilitas=total_fasilitas,
             total_mahasiswa=total_mahasiswa,
             peminjaman_pending=peminjaman_pending

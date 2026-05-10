@@ -2,196 +2,302 @@
 
 {% block content %}
 
-<!-- ===== STYLE DASHBOARD ADMIN ===== -->
 <style>
-body{
-    background: #f4f7fe;
-    font-family: 'Segoe UI', sans-serif;
-}
 
-/* SIDEBAR */
-.sidebar{
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 260px;
-    height: 100vh;
-    background: linear-gradient(180deg,#0b1f3a,#0f2f5a,#0a1a33);
-    color: white;
-    padding: 20px;
-}
+/* ================= DASHBOARD ================= */
 
-.sidebar h3{
-    font-size: 18px;
-    margin-bottom: 30px;
-}
-
-.sidebar a{
-    display: block;
-    padding: 12px;
-    margin: 6px 0;
-    color: #cbd5e1;
-    text-decoration: none;
-    border-radius: 10px;
-}
-
-.sidebar a:hover{
-    background: rgba(255,255,255,0.1);
-    color: white;
-}
-
-/* MAIN */
-.main{
-    margin-left: 270px;
-    padding: 20px;
-}
-
-/* TOPBAR */
 .topbar{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: white;
-    padding: 15px 20px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    background:white;
+    border-radius:18px;
+    padding:18px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 5px 20px rgba(0,0,0,0.05);
 }
 
-/* CARD */
-.card-box{
-    background: white;
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+.topbar h2{
+    font-weight:700;
+    color:#0f172a;
 }
 
+/* SEARCH */
+.search-box{
+    width:280px;
+}
+
+.search-box input{
+    border-radius:12px;
+    padding:10px 15px;
+}
+
+/* WELCOME */
+.welcome-box{
+    margin-top:25px;
+    padding:35px;
+    border-radius:24px;
+    color:white;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a,#0ea5e9);
+}
+
+.welcome-box h1{
+    font-size:42px;
+    font-weight:700;
+}
+
+.welcome-box p{
+    margin-top:10px;
+    font-size:17px;
+}
+
+/* CARD STAT */
 .stats{
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 15px;
-    margin-top: 20px;
+    margin-top:25px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
 }
 
-.stat{
-    padding: 15px;
-    border-radius: 15px;
-    color: white;
+.stat-card{
+    background:white;
+    border-radius:22px;
+    padding:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.05);
 }
 
-.blue{background:#2563eb;}
-.green{background:#10b981;}
-.orange{background:#f59e0b;}
-.red{background:#ef4444;}
+.stat-card small{
+    color:#64748b;
+    font-size:15px;
+}
+
+.stat-card h2{
+    margin-top:10px;
+    font-size:38px;
+    font-weight:700;
+    color:#0f172a;
+}
 
 /* TABLE */
-table{
-    width: 100%;
-    border-collapse: collapse;
+.table-box{
+    margin-top:30px;
+    background:white;
+    border-radius:24px;
+    padding:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.05);
 }
 
-th,td{
-    padding: 12px;
-    border-bottom: 1px solid #eee;
+.table-title{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:20px;
+    color:#0f172a;
 }
 
-.badge{
-    padding: 5px 10px;
-    border-radius: 10px;
-    font-size: 12px;
-    color: white;
+.table{
+    vertical-align:middle;
 }
 
-.pending{background:#f59e0b;}
-.approved{background:#10b981;}
-.rejected{background:#ef4444;}
-
-.btn{
-    padding: 5px 8px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
+.table thead{
+    background:#f8fafc;
 }
 
-.btn-approve{background:#10b981;color:white;}
-.btn-reject{background:#ef4444;color:white;}
-.btn-view{background:#3b82f6;color:white;}
+.table th{
+    padding:16px;
+    border:none;
+    color:#334155;
+}
+
+.table td{
+    padding:18px 16px;
+    border-bottom:1px solid #f1f5f9;
+}
+
+/* STATUS */
+.badge-status{
+    padding:8px 14px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.pending{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+.disetujui{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.ditolak{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+/* BUTTON */
+.action-btn{
+    border:none;
+    padding:8px 12px;
+    border-radius:10px;
+    color:white;
+    margin-right:5px;
+    transition:.3s;
+}
+
+.btn-approve{
+    background:#10b981;
+}
+
+.btn-reject{
+    background:#ef4444;
+}
+
+.action-btn:hover{
+    transform:scale(1.05);
+}
 
 </style>
 
-<!-- ===== SIDEBAR ===== -->
-<div class="sidebar">
-    <h3>🏢 Smart Facility</h3>
-    <a href="/dashboard_admin">🏠 Dashboard</a>
-    <a href="/peminjaman">📑 Peminjaman</a>
-    <a href="/fasilitas">🏫 Fasilitas</a>
-    <a href="/pengguna">👤 Pengguna</a>
-    <a href="/laporan">📊 Laporan</a>
-    <a href="/logout">🚪 Logout</a>
+<!-- ================= TOPBAR ================= -->
+
+<div class="topbar">
+
+    <h2>Dashboard Admin</h2>
+
+    <div class="search-box">
+        <input type="text"
+               class="form-control"
+               placeholder="Cari sesuatu...">
+    </div>
+
 </div>
 
-<!-- ===== MAIN ===== -->
-<div class="main">
+<!-- ================= WELCOME ================= -->
 
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <h2>Dashboard Admin</h2>
-        <input type="text" placeholder="Cari sesuatu..." style="padding:8px;border-radius:10px;border:1px solid #ddd;">
+<div class="welcome-box">
+
+    <h1>Selamat datang kembali, Admin!</h1>
+
+    <p>
+        Kelola peminjaman fasilitas dengan mudah dan cepat.
+    </p>
+
+</div>
+
+<!-- ================= STATISTIK ================= -->
+
+<div class="stats">
+
+    <div class="stat-card">
+        <small>Total</small>
+        <h2>
+            {{ pending + disetujui }}
+        </h2>
     </div>
 
-    <!-- WELCOME -->
-    <div class="card-box" style="margin-top:20px; background: linear-gradient(135deg,#1e3a8a,#0ea5e9); color:white;">
-        <h2>Selamat datang kembali, Admin!</h2>
-        <p>Kelola peminjaman fasilitas dengan mudah dan cepat.</p>
+    <div class="stat-card">
+        <small>Disetujui</small>
+        <h2>{{ disetujui }}</h2>
     </div>
 
-    <!-- STATS -->
-    <div class="stats">
-        <div class="stat blue">Total<br><h3>{{ total }}</h3></div>
-        <div class="stat green">Disetujui<br><h3>{{ disetujui }}</h3></div>
-        <div class="stat orange">Pending<br><h3>{{ pending }}</h3></div>
-        <div class="stat red">Ditolak<br><h3>{{ ditolak }}</h3></div>
+    <div class="stat-card">
+        <small>Pending</small>
+        <h2>{{ pending }}</h2>
     </div>
 
-    <!-- TABLE -->
-    <div class="card-box" style="margin-top:20px;">
-        <h3>Peminjaman Terbaru</h3>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Nama</th>
-                    <th>Fasilitas</th>
-                    <th>Waktu</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for p in peminjaman %}
-                <tr>
-                    <td>{{ p.nama }}</td>
-                    <td>{{ p.fasilitas }}</td>
-                    <td>{{ p.waktu }}</td>
-                    <td>
-                        {% if p.status == 'Pending' %}
-                            <span class="badge pending">Pending</span>
-                        {% elif p.status == 'Disetujui' %}
-                            <span class="badge approved">Disetujui</span>
-                        {% else %}
-                            <span class="badge rejected">Ditolak</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="/view/{{ p.id }}" class="btn btn-view">👁</a>
-                        <a href="/approve/{{ p.id }}" class="btn btn-approve">✔</a>
-                        <a href="/reject/{{ p.id }}" class="btn btn-reject">✖</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="stat-card">
+        <small>Ditolak</small>
+        <h2>{{ ditolak}}</h2>
     </div>
+
+</div>
+
+<!-- ================= TABLE ================= -->
+
+<div class="table-box">
+
+    <div class="table-title">
+        Peminjaman Terbaru
+    </div>
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Nama</th>
+                <th>Fasilitas</th>
+                <th>Waktu</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for p in peminjaman_pending %}
+
+            <tr>
+
+                <td>
+                    {{ p.nama_lengkap }}
+                </td>
+
+                <td>
+                    {{ p.nama_fasilitas }}
+                </td>
+
+                <td>
+                    {{ p.tanggal_pinjam }}
+                    <br>
+                    <small>
+                        {{ p.jam_mulai }} - {{ p.jam_selesai }}
+                    </small>
+                </td>
+
+                <td>
+
+                    {% if p.status == 'pending' %}
+                        <span class="badge-status pending">
+                            Pending
+                        </span>
+
+                    {% elif p.status == 'disetujui' %}
+                        <span class="badge-status disetujui">
+                            Disetujui
+                        </span>
+
+                    {% else %}
+                        <span class="badge-status ditolak">
+                            Ditolak
+                        </span>
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <a href="/setujui/{{ p.id }}">
+                        <button class="action-btn btn-approve">
+                            Setujui
+                        </button>
+                    </a>
+
+                    <a href="/tolak/{{ p.id }}">
+                        <button class="action-btn btn-reject">
+                            Tolak
+                        </button>
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
 
 </div>
 
