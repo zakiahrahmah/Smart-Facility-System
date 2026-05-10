@@ -24,16 +24,6 @@
     color:#64748b;
 }
 
-/* BUTTON */
-.add-btn{
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:12px 22px;
-    border-radius:14px;
-    font-weight:600;
-}
-
 /* CARD */
 .table-card{
     background:white;
@@ -58,43 +48,11 @@
     vertical-align:middle;
 }
 
-/* ACTION */
-.action-btn{
-    border:none;
-    padding:8px 14px;
-    border-radius:10px;
-    color:white;
-    margin-right:5px;
-    text-decoration:none;
-    display:inline-block;
-}
-
-.edit{
-    background:#f59e0b;
-}
-
-.delete{
-    background:#ef4444;
-}
-
 /* BADGE */
 .badge{
     padding:8px 12px;
     border-radius:10px;
-}
-
-/* MODAL */
-.modal-content{
-    border:none;
-    border-radius:20px;
-}
-
-.modal-header{
-    border-bottom:1px solid #e2e8f0;
-}
-
-.modal-footer{
-    border-top:1px solid #e2e8f0;
+    font-size:13px;
 }
 
 </style>
@@ -108,18 +66,11 @@
         </h1>
 
         <p class="subtitle">
-            Kelola seluruh fasilitas kampus.
+            Daftar seluruh fasilitas kampus yang tersedia
+            dalam sistem Smart Facility Booking.
         </p>
 
     </div>
-
-    <button class="add-btn"
-            data-bs-toggle="modal"
-            data-bs-target="#modalTambah">
-
-        Tambah Fasilitas
-
-    </button>
 
 </div>
 
@@ -138,7 +89,7 @@
                     <th>Kode</th>
                     <th>Status</th>
                     <th>Stok</th>
-                    <th>Aksi</th>
+                    <th>Status Sistem</th>
                 </tr>
 
             </thead>
@@ -188,249 +139,28 @@
                     <td>
 
                         <span class="badge bg-secondary">
-                            {{ f.stok }}
+
+                            {{ f.jumlah_stok }}
+
                         </span>
 
                     </td>
 
                     <td>
 
-                        <button class="action-btn edit"
-                                data-bs-toggle="modal"
-                                data-bs-target="#edit{{ f.id }}">
-
-                            Edit
-
-                        </button>
-
-                        <a href="{{ url_for('hapus_fasilitas', id=f.id) }}"
-                           class="action-btn delete">
-
-                            Hapus
-
-                        </a>
+                        <span class="badge bg-success">
+                            Aktif
+                        </span>
 
                     </td>
 
                 </tr>
-
-                <!-- MODAL EDIT -->
-                <div class="modal fade"
-                     id="edit{{ f.id }}"
-                     tabindex="-1">
-
-                    <div class="modal-dialog">
-
-                        <div class="modal-content">
-
-                            <form method="POST"
-                                  action="{{ url_for('edit_fasilitas', id=f.id) }}">
-
-                                <div class="modal-header">
-
-                                    <h5 class="modal-title">
-                                        Edit Fasilitas
-                                    </h5>
-
-                                    <button type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="modal">
-                                    </button>
-
-                                </div>
-
-                                <div class="modal-body">
-
-                                    <label class="mb-2">
-                                        Nama Fasilitas
-                                    </label>
-
-                                    <input type="text"
-                                           name="nama_fasilitas"
-                                           class="form-control mb-3"
-                                           value="{{ f.nama_fasilitas }}"
-                                           required>
-
-                                    <label class="mb-2">
-                                        Kategori
-                                    </label>
-
-                                    <input type="text"
-                                           name="kategori"
-                                           class="form-control mb-3"
-                                           value="{{ f.kategori }}"
-                                           required>
-
-                                    <label class="mb-2">
-                                        Kode
-                                    </label>
-
-                                    <input type="text"
-                                           name="kode"
-                                           class="form-control mb-3"
-                                           value="{{ f.kode }}"
-                                           required>
-
-                                    <label class="mb-2">
-                                        Status
-                                    </label>
-
-                                    <select name="status"
-                                            class="form-control mb-3">
-
-                                        <option value="tersedia"
-                                        {% if f.status == 'tersedia' %}
-                                        selected
-                                        {% endif %}>
-                                            Tersedia
-                                        </option>
-
-                                        <option value="tidak tersedia"
-                                        {% if f.status == 'tidak tersedia' %}
-                                        selected
-                                        {% endif %}>
-                                            Tidak Tersedia
-                                        </option>
-
-                                    </select>
-
-                                    <label class="mb-2">
-                                        Stok
-                                    </label>
-
-                                    <input type="number"
-                                           name="stok"
-                                           class="form-control"
-                                           value="{{ f.jumlah_stok }}"
-                                           required>
-
-                                </div>
-
-                                <div class="modal-footer">
-
-                                    <button type="submit"
-                                            class="btn btn-primary">
-
-                                        Simpan Perubahan
-
-                                    </button>
-
-                                </div>
-
-                            </form>
-
-                        </div>
-
-                    </div>
-
-                </div>
 
                 {% endfor %}
 
             </tbody>
 
         </table>
-
-    </div>
-
-</div>
-
-<!-- MODAL TAMBAH -->
-<div class="modal fade"
-     id="modalTambah"
-     tabindex="-1">
-
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-
-            <form method="POST"
-                  action="{{ url_for('tambah_fasilitas') }}">
-
-                <div class="modal-header">
-
-                    <h5 class="modal-title">
-                        Tambah Fasilitas
-                    </h5>
-
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal">
-                    </button>
-
-                </div>
-
-                <div class="modal-body">
-
-                    <label class="mb-2">
-                        Nama Fasilitas
-                    </label>
-
-                    <input type="text"
-                           name="nama_fasilitas"
-                           class="form-control mb-3"
-                           required>
-
-                    <label class="mb-2">
-                        Kategori
-                    </label>
-
-                    <input type="text"
-                           name="kategori"
-                           class="form-control mb-3"
-                           required>
-
-                    <label class="mb-2">
-                        Kode Fasilitas
-                    </label>
-
-                    <input type="text"
-                           name="kode"
-                           class="form-control mb-3"
-                           required>
-
-                    <label class="mb-2">
-                        Status
-                    </label>
-
-                    <select name="status"
-                            class="form-control mb-3">
-
-                        <option value="tersedia">
-                            Tersedia
-                        </option>
-
-                        <option value="tidak tersedia">
-                            Tidak Tersedia
-                        </option>
-
-                    </select>
-
-                    <label class="mb-2">
-                        Stok
-                    </label>
-
-                    <input type="number"
-                           name="stok"
-                           class="form-control"
-                           required>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button type="submit"
-                            class="btn btn-primary">
-
-                        Simpan
-
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
 
     </div>
 
