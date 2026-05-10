@@ -67,7 +67,7 @@ body {
 }
 
 .sidebar-modern .brand{
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     margin-bottom: 40px;
 }
@@ -97,6 +97,7 @@ body {
 
 /* ================= MAIN CONTENT ================= */
 .main-content{
+    margin-left: 260px;
     min-height:80vh;
     padding:25px;
 }
@@ -129,10 +130,11 @@ body {
 }
 
 /* ================= RESPONSIVE ================= */
-@media(max-width:768px){
+@media(max-width:992px){
 
     .sidebar-modern{
         transform:translateX(-100%);
+         transition: 0.3s;
     }
 
     .sidebar-modern.active{
