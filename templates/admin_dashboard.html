@@ -77,6 +77,26 @@
     color:#0f172a;
 }
 
+/* CHART */
+.chart-card{
+    background:white;
+    border-radius:28px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(15,23,42,0.06);
+    margin-top:25px;
+}
+
+.chart-title{
+    font-size:24px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.chart-subtitle{
+    color:#64748b;
+    margin-top:5px;
+}
+
 /* TABLE */
 .table-box{
     margin-top:30px;
@@ -192,7 +212,7 @@
     <div class="stat-card">
         <small>Total</small>
         <h2>
-            {{ pending + disetujui }}
+            {{ pending + disetujui + ditolak }}
         </h2>
     </div>
 
@@ -208,8 +228,32 @@
 
     <div class="stat-card">
         <small>Ditolak</small>
-        <h2>{{ ditolak}}</h2>
+        <h2>{{ ditolak }}</h2>
     </div>
+
+</div>
+
+<!-- ================= CHART ================= -->
+
+<div class="chart-card">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h4 class="chart-title">
+                Statistik Peminjaman
+            </h4>
+
+            <p class="chart-subtitle">
+                Grafik aktivitas peminjaman fasilitas kampus.
+            </p>
+
+        </div>
+
+    </div>
+
+    <canvas id="bookingChart"></canvas>
 
 </div>
 
@@ -250,43 +294,52 @@
                 <td>
                     {{ p.tanggal_pinjam }}
                     <br>
+
                     <small>
-                        {{ p.jam_mulai }} - {{ p.jam_selesai }}
+                        {{ p.waktu_mulai }} - {{ p.waktu_selesai }}
                     </small>
                 </td>
 
                 <td>
 
                     {% if p.status == 'pending' %}
+
                         <span class="badge-status pending">
                             Pending
                         </span>
 
                     {% elif p.status == 'disetujui' %}
+
                         <span class="badge-status disetujui">
                             Disetujui
                         </span>
 
                     {% else %}
+
                         <span class="badge-status ditolak">
                             Ditolak
                         </span>
+
                     {% endif %}
 
                 </td>
 
                 <td>
 
-                    <a href="/setujui/{{ p.id }}">
+                    <a href="{{ url_for('update_status', id=p.id, status='disetujui') }}">
+
                         <button class="action-btn btn-approve">
                             Setujui
                         </button>
+
                     </a>
 
-                    <a href="/tolak/{{ p.id }}">
+                    <a href="{{ url_for('update_status', id=p.id, status='ditolak') }}">
+
                         <button class="action-btn btn-reject">
                             Tolak
                         </button>
+
                     </a>
 
                 </td>
@@ -300,5 +353,101 @@
     </table>
 
 </div>
+
+<!-- ================= CHART JS ================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById('bookingChart');
+
+new Chart(ctx, {
+
+    type: 'line',
+
+    data: {
+
+        labels: [
+            'Pending',
+            'Disetujui',
+            'Ditolak'
+        ],
+
+        datasets: [{
+
+            label: 'Statistik Peminjaman',
+
+            data: [
+                {{ pending }},
+                {{ disetujui }},
+                {{ ditolak }}
+            ],
+
+            tension: 0.4,
+            fill: true,
+
+            borderWidth: 4,
+
+            pointRadius: 6,
+            pointHoverRadius: 8,
+
+            backgroundColor: 'rgba(37,99,235,0.12)',
+            borderColor: '#2563eb',
+
+            pointBackgroundColor: '#2563eb',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 3
+
+        }]
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+
+            legend: {
+                display: false
+            }
+
+        },
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true,
+
+                grid: {
+                    color: 'rgba(148,163,184,0.15)'
+                },
+
+                ticks: {
+                    color: '#64748b'
+                }
+
+            },
+
+            x: {
+
+                grid: {
+                    display: false
+                },
+
+                ticks: {
+                    color: '#64748b'
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
 
 {% endblock %}
