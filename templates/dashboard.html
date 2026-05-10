@@ -4,73 +4,12 @@
 
 <style>
 
-body{
-    background: #f1f5f9;
-    font-family: 'Segoe UI', sans-serif;
-}
-
-/* ================= SIDEBAR ================= */
-.sidebar-modern{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 260px;
-    height: 100vh;
-    background: linear-gradient(180deg,#0e3040,#13275f);
-    padding: 25px;
-    z-index: 1000;
-}
-
-.sidebar-modern .brand{
-    color: white;
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 40px;
-}
-
-.sidebar-modern .brand span{
-    color: #0ea5e9;
-}
-
-.menu-title{
-    color: #94a3b8;
-    font-size: 12px;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-}
-
-.sidebar-modern a{
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #e2e8f0;
-    text-decoration: none;
-    padding: 14px;
-    border-radius: 14px;
-    margin-bottom: 10px;
-    transition: 0.3s;
-    font-weight: 500;
-}
-
-.sidebar-modern a:hover{
-    background: #07212c;
-    transform: translateX(4px);
-    color: white;
-}
-
-.sidebar-modern a.active{
-    background: linear-gradient(135deg,#3283a6,#162d5f);
-    color: white;
-    box-shadow: 0 8px 20px rgba(56,189,248,0.25);
-}
-
-/* ================= MAIN ================= */
+/* ===== MAIN ONLY (SIDEBAR SUDAH DI BASE) ===== */
 .main-modern{
-    margin-left: 280px;
     padding: 30px;
 }
 
-/* ================= HERO ================= */
+/* ===== HERO ===== */
 .hero-box{
     background: linear-gradient(135deg,#0f3b4f,#1c2954);
     color: white;
@@ -80,7 +19,7 @@ body{
     box-shadow: 0 12px 30px rgba(15,23,42,0.25);
 }
 
-/* ================= CARD ================= */
+/* ===== CARD ===== */
 .dashboard-card{
     background: white;
     border-radius: 24px;
@@ -89,14 +28,14 @@ body{
     border: none;
 }
 
-/* ================= FIX STAT BOX (WAJIB) ================= */
+/* ===== STAT BOX ===== */
 .stat-box{
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* ================= ICON ================= */
+/* ===== ICON ===== */
 .stat-icon{
     width: 60px;
     height: 60px;
@@ -120,7 +59,7 @@ body{
     background: linear-gradient(135deg,#10b981,#059669);
 }
 
-/* ================= QUICK MENU ================= */
+/* ===== QUICK MENU ===== */
 .quick-menu{
     display: grid;
     grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
@@ -135,7 +74,7 @@ body{
     text-decoration: none;
 }
 
-/* ================= BADGE ================= */
+/* ===== BADGE ===== */
 .badge-modern{
     padding: 7px 14px;
     border-radius: 30px;
@@ -145,45 +84,21 @@ body{
     font-weight: 600;
 }
 
-/* ================= RIWAYAT ================= */
+/* ===== RIWAYAT ===== */
 .riwayat-item{
     padding-bottom: 15px;
     margin-bottom: 15px;
     border-bottom: 1px solid #e5e7eb;
 }
 
-/* ================= RESPONSIVE ================= */
+/* ===== RESPONSIVE ===== */
 @media(max-width:992px){
-    .sidebar-modern{
-        position: relative;
-        width: 100%;
-        height: auto;
-    }
-
     .main-modern{
-        margin-left: 0;
+        padding: 20px;
     }
 }
 
 </style>
-
-<!-- ================= SIDEBAR ================= -->
-<div class="sidebar-modern">
-
-    <div class="brand">
-        Smart Facility <br>
-        <span>Booking System</span>
-    </div>
-
-    <div class="menu-title">Main Menu</div>
-
-    <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a>
-    <a href="{{ url_for('fasilitas') }}">Fasilitas</a>
-    <a href="{{ url_for('booking') }}">Booking</a>
-    <a href="{{ url_for('riwayat_user') }}">Riwayat</a>
-    <a href="{{ url_for('logout') }}">Logout</a>
-
-</div>
 
 <!-- ================= MAIN ================= -->
 <div class="main-modern">
@@ -254,7 +169,7 @@ body{
 
                 <div>
 
-                    {% set status = (r.status if r.status is defined else r.keterangan if r.keterangan is defined else '')|lower %}
+                    {% set status = (r.status if r.status is defined else '')|lower %}
 
                     {% if status == 'pending' %}
                         <span class="badge-modern" style="background:#facc15;color:#000;">Pending</span>
