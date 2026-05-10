@@ -4,97 +4,233 @@
 
 <style>
 
-.report-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:25px;
+.page-header{
+    margin-bottom:30px;
 }
 
-.title{
+.page-title{
     font-size:34px;
     font-weight:700;
     color:#0f172a;
+    margin-bottom:10px;
 }
 
-.subtitle{
+.page-subtitle{
     color:#64748b;
+    font-size:15px;
 }
 
 /* CARD */
 .report-card{
     background:white;
     border-radius:24px;
-    padding:25px;
+    padding:28px;
     box-shadow:0 5px 20px rgba(0,0,0,0.05);
 }
 
+/* INFO BOX */
+.info-box{
+    background:linear-gradient(135deg,#eff6ff,#dbeafe);
+    border-radius:18px;
+    padding:18px 22px;
+    margin-bottom:25px;
+}
+
+.info-title{
+    font-size:18px;
+    font-weight:700;
+    color:#1e3a8a;
+    margin-bottom:8px;
+}
+
+.info-text{
+    color:#475569;
+    font-size:14px;
+    line-height:1.7;
+}
+
 /* TABLE */
+.table{
+    margin-bottom:0;
+}
+
 .table thead{
     background:#f8fafc;
 }
 
 .table th{
-    border:none;
     padding:16px;
+    border:none;
+    color:#334155;
+    font-weight:700;
+    white-space:nowrap;
 }
 
 .table td{
-    padding:18px 16px;
+    padding:16px;
+    vertical-align:middle;
+    color:#334155;
+}
+
+/* STATUS */
+.status{
+    padding:7px 14px;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.disetujui{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.pending{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.ditolak{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.dibatalkan{
+    background:#e2e8f0;
+    color:#334155;
+}
+
+/* RESPONSIVE */
+.table-responsive{
+    overflow-x:auto;
 }
 
 </style>
 
-<div class="report-header">
+<!-- HEADER -->
+<div class="page-header">
 
-    <div>
+    <h1 class="page-title">
+        Laporan Peminjaman
+    </h1>
 
-        <h1 class="title">Laporan</h1>
+    <p class="page-subtitle">
+        Riwayat seluruh aktivitas peminjaman fasilitas kampus.
+    </p>
 
-        <p class="subtitle">
-            Laporan seluruh aktivitas peminjaman fasilitas.
-        </p>
+</div>
+
+<!-- CARD -->
+<div class="report-card">
+
+    <!-- INFO -->
+    <div class="info-box">
+
+        <div class="info-title">
+            Informasi Laporan
+        </div>
+
+        <div class="info-text">
+            Halaman ini menampilkan seluruh data peminjaman fasilitas
+            yang dilakukan oleh pengguna sistem. Admin dapat memantau
+            status peminjaman seperti disetujui, ditolak, pending,
+            maupun dibatalkan.
+        </div>
 
     </div>
 
+    <!-- TABLE -->
+    <div class="table-responsive">
 
-<div class="report-card">
+        <table class="table align-middle">
 
-    <table class="table align-middle">
+            <thead>
 
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th>Fasilitas</th>
-                <th>Tanggal</th>
-                <th>Status</th>
-            </tr>
-        </thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Peminjam</th>
+                    <th>Fasilitas</th>
+                    <th>Tanggal</th>
+                    <th>Status</th>
+                </tr>
 
-        <tbody>
+            </thead>
 
-            {% for l in laporan %}
+            <tbody>
 
-            <tr>
+                {% for l in laporan %}
 
-                <td>{{ loop.index }}</td>
+                <tr>
 
-                <td>{{ l.nama_lengkap }}</td>
+                    <td>
+                        {{ loop.index }}
+                    </td>
 
-                <td>{{ l.nama_fasilitas }}</td>
+                    <td>
+                        <strong>
+                            {{ l.nama_lengkap }}
+                        </strong>
+                    </td>
 
-                <td>{{ l.tanggal_pinjam }}</td>
+                    <td>
 
-                <td>{{ l.status }}</td>
+                        {% if l.nama_fasilitas %}
 
-            </tr>
+                            {{ l.nama_fasilitas }}
 
-            {% endfor %}
+                        {% else %}
 
-        </tbody>
+                            <span class="text-muted">
+                                Fasilitas tidak ditemukan
+                            </span>
 
-    </table>
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ l.tanggal_pinjam }}
+                    </td>
+
+                    <td>
+
+                        {% if l.status == 'disetujui' %}
+
+                            <span class="status disetujui">
+                                Disetujui
+                            </span>
+
+                        {% elif l.status == 'pending' %}
+
+                            <span class="status pending">
+                                Pending
+                            </span>
+
+                        {% elif l.status == 'ditolak' %}
+
+                            <span class="status ditolak">
+                                Ditolak
+                            </span>
+
+                        {% else %}
+
+                            <span class="status dibatalkan">
+                                Dibatalkan
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
 

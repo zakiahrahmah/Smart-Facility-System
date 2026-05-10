@@ -4,7 +4,7 @@
 
 <style>
 
-.page-header{
+.page-top{
     margin-bottom:25px;
 }
 
@@ -19,7 +19,7 @@
 }
 
 /* CARD */
-.user-card{
+.table-card{
     background:white;
     border-radius:24px;
     padding:25px;
@@ -34,44 +34,31 @@
 .table th{
     padding:16px;
     border:none;
+    color:#334155;
 }
 
 .table td{
     padding:18px 16px;
+    vertical-align:middle;
 }
 
-/* BADGE */
+/* ROLE BADGE */
 .role-badge{
     background:#dbeafe;
-    color:#2563eb;
+    color:#1d4ed8;
     padding:7px 14px;
-    border-radius:30px;
+    border-radius:12px;
     font-size:13px;
     font-weight:600;
 }
 
-/* BUTTON */
-.action-btn{
-    border:none;
-    padding:8px 14px;
-    border-radius:10px;
-    color:white;
-    margin-right:5px;
-}
-
-.edit{
-    background:#f59e0b;
-}
-
-.delete{
-    background:#ef4444;
-}
-
 </style>
 
-<div class="page-header">
+<div class="page-top">
 
-    <h1 class="title">Data Pengguna</h1>
+    <h1 class="title">
+        Data Pengguna
+    </h1>
 
     <p class="subtitle">
         Kelola seluruh pengguna sistem booking.
@@ -79,18 +66,19 @@
 
 </div>
 
-<div class="user-card">
+<div class="table-card">
 
     <table class="table align-middle">
 
         <thead>
+
             <tr>
                 <th>No</th>
                 <th>Username</th>
                 <th>Nama Lengkap</th>
                 <th>Role</th>
-                <th>Aksi</th>
             </tr>
+
         </thead>
 
         <tbody>
@@ -99,29 +87,25 @@
 
             <tr>
 
-                <td>{{ loop.index }}</td>
-
-                <td>{{ u.username }}</td>
-
-                <td>{{ u.nama_lengkap }}</td>
+                <td>
+                    {{ loop.index }}
+                </td>
 
                 <td>
-                    <span class="role-badge">
-                        {{ u.role }}
-                    </span>
+                    <strong>
+                        {{ u.username }}
+                    </strong>
+                </td>
+
+                <td>
+                    {{ u.nama_lengkap }}
                 </td>
 
                 <td>
 
-                    <button class="action-btn edit">
-                        Edit
-                    </button>
-
-                    <a href="/hapus_user/{{ u.id }}">
-                        <button class="action-btn delete">
-                            Hapus
-                        </button>
-                    </a>
+                    <span class="role-badge">
+                        {{ u.role }}
+                    </span>
 
                 </td>
 
