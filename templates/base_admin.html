@@ -68,28 +68,28 @@
         Smart Facility Booking System
     </div>
 
-    <a href="/dashboard_admin" class="active">
-        🏠 Dashboard
+    <a href="{{ url_for('admin_dashboard') }}">
+        Dashboard
     </a>
 
-    <a href="/admin/peminjaman">
-        📋 Data Peminjaman
+    <a href="{{ url_for('admin_peminjaman') }}">
+        Data Peminjaman
     </a>
 
-    <a href="/admin/fasilitas">
-        🏢 Data Fasilitas
+    <a href="{{ url_for('admin_fasilitas') }}">
+        Data Fasilitas
     </a>
 
-    <a href="/admin/pengguna">
-        👤 Data Pengguna
+    <a href="{{ url_for('admin_user') }}">
+        Data Pengguna
     </a>
 
-    <a href="/admin/laporan">
-        📊 Laporan
+    <a href="{{ url_for('laporan_admin') }}">
+        Laporan
     </a>
 
-    <a href="/logout">
-        🚪 Logout
+    <a href="{{ url_for('logout') }}">
+        Logout
     </a>
 
 </div>
