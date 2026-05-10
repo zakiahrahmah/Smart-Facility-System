@@ -1,0 +1,146 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+
+<style>
+
+.page-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.title{
+    font-size:34px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.subtitle{
+    color:#64748b;
+}
+
+/* BUTTON */
+.add-btn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px 22px;
+    border-radius:14px;
+    font-weight:600;
+}
+
+/* CARD */
+.table-card{
+    background:white;
+    border-radius:24px;
+    padding:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.05);
+}
+
+/* TABLE */
+.table thead{
+    background:#f8fafc;
+}
+
+.table th{
+    padding:16px;
+    border:none;
+}
+
+.table td{
+    padding:18px 16px;
+}
+
+/* ACTION */
+.action-btn{
+    border:none;
+    padding:8px 14px;
+    border-radius:10px;
+    color:white;
+    margin-right:5px;
+}
+
+.edit{
+    background:#f59e0b;
+}
+
+.delete{
+    background:#ef4444;
+}
+
+</style>
+
+<div class="page-top">
+
+    <div>
+        <h1 class="title">Data Fasilitas</h1>
+        <p class="subtitle">
+            Kelola seluruh fasilitas kampus.
+        </p>
+    </div>
+
+    <button class="add-btn"
+            data-bs-toggle="modal"
+            data-bs-target="#modalTambah">
+        Tambah Fasilitas
+    </button>
+
+</div>
+
+<div class="table-card">
+
+    <table class="table align-middle">
+
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Fasilitas</th>
+                <th>Lokasi</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for f in fasilitas %}
+
+            <tr>
+
+                <td>{{ loop.index }}</td>
+
+                <td>{{ f.nama_fasilitas }}</td>
+
+                <td>{{ f.lokasi }}</td>
+
+                <td>{{ f.status }}</td>
+
+                <td>
+
+                    <button class="action-btn edit"
+                            data-bs-toggle="modal"
+                            data-bs-target="#edit{{ f.id }}">
+                        Edit
+                    </button>
+
+                    <a href="/hapus_fasilitas/{{ f.id }}">
+                        <button class="action-btn delete">
+                            Hapus
+                        </button>
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

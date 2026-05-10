@@ -1,0 +1,180 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+
+<style>
+
+.page-header{
+    margin-bottom:25px;
+}
+
+.page-title{
+    font-size:34px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.page-subtitle{
+    color:#64748b;
+    margin-top:8px;
+}
+
+/* CARD */
+.table-card{
+    background:white;
+    border-radius:24px;
+    padding:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.05);
+}
+
+/* TABLE */
+.table{
+    vertical-align:middle;
+}
+
+.table thead{
+    background:#f8fafc;
+}
+
+.table th{
+    border:none;
+    padding:16px;
+    color:#334155;
+}
+
+.table td{
+    padding:18px 16px;
+    border-bottom:1px solid #f1f5f9;
+}
+
+/* STATUS */
+.badge-status{
+    padding:8px 15px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.pending{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+.disetujui{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.ditolak{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+/* BUTTON */
+.action-btn{
+    border:none;
+    padding:9px 14px;
+    border-radius:10px;
+    color:white;
+    font-size:14px;
+    margin-right:5px;
+}
+
+.btn-approve{
+    background:#10b981;
+}
+
+.btn-reject{
+    background:#ef4444;
+}
+
+</style>
+
+<div class="page-header">
+    <h1 class="page-title">Data Peminjaman</h1>
+    <p class="page-subtitle">
+        Kelola seluruh data peminjaman fasilitas kampus.
+    </p>
+</div>
+
+<div class="table-card">
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Fasilitas</th>
+                <th>Tanggal</th>
+                <th>Waktu</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for p in data %}
+
+            <tr>
+
+                <td>{{ loop.index }}</td>
+
+                <td>{{ p.nama_lengkap }}</td>
+
+                <td>{{ p.nama_fasilitas }}</td>
+
+                <td>{{ p.tanggal_pinjam }}</td>
+
+                <td>
+                    {{ p.jam_mulai }} - {{ p.jam_selesai }}
+                </td>
+
+                <td>
+
+                    {% if p.status == 'pending' %}
+                        <span class="badge-status pending">
+                            Pending
+                        </span>
+
+                    {% elif p.status == 'disetujui' %}
+                        <span class="badge-status disetujui">
+                            Disetujui
+                        </span>
+
+                    {% else %}
+                        <span class="badge-status ditolak">
+                            Ditolak
+                        </span>
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <a href="/setujui/{{ p.id }}">
+                        <button class="action-btn btn-approve">
+                            Setujui
+                        </button>
+                    </a>
+
+                    <a href="/tolak/{{ p.id }}">
+                        <button class="action-btn btn-reject">
+                            Tolak
+                        </button>
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

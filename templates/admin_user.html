@@ -1,0 +1,138 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+
+<style>
+
+.page-header{
+    margin-bottom:25px;
+}
+
+.title{
+    font-size:34px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.subtitle{
+    color:#64748b;
+}
+
+/* CARD */
+.user-card{
+    background:white;
+    border-radius:24px;
+    padding:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.05);
+}
+
+/* TABLE */
+.table thead{
+    background:#f8fafc;
+}
+
+.table th{
+    padding:16px;
+    border:none;
+}
+
+.table td{
+    padding:18px 16px;
+}
+
+/* BADGE */
+.role-badge{
+    background:#dbeafe;
+    color:#2563eb;
+    padding:7px 14px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:600;
+}
+
+/* BUTTON */
+.action-btn{
+    border:none;
+    padding:8px 14px;
+    border-radius:10px;
+    color:white;
+    margin-right:5px;
+}
+
+.edit{
+    background:#f59e0b;
+}
+
+.delete{
+    background:#ef4444;
+}
+
+</style>
+
+<div class="page-header">
+
+    <h1 class="title">Data Pengguna</h1>
+
+    <p class="subtitle">
+        Kelola seluruh pengguna sistem booking.
+    </p>
+
+</div>
+
+<div class="user-card">
+
+    <table class="table align-middle">
+
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Username</th>
+                <th>Nama Lengkap</th>
+                <th>Role</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for u in users %}
+
+            <tr>
+
+                <td>{{ loop.index }}</td>
+
+                <td>{{ u.username }}</td>
+
+                <td>{{ u.nama_lengkap }}</td>
+
+                <td>
+                    <span class="role-badge">
+                        {{ u.role }}
+                    </span>
+                </td>
+
+                <td>
+
+                    <button class="action-btn edit">
+                        Edit
+                    </button>
+
+                    <a href="/hapus_user/{{ u.id }}">
+                        <button class="action-btn delete">
+                            Hapus
+                        </button>
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

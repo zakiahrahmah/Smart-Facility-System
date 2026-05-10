@@ -499,6 +499,118 @@ def admin_dashboard():
     except Exception as e:
         return f"ADMIN ERROR: {str(e)}"
 
+@app.route('/admin_peminjaman')
+@login_required
+def admin_peminjaman():
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            p.*,
+            u.nama_lengkap,
+            f.nama_fasilitas
+        FROM peminjaman p
+        LEFT JOIN users u
+            ON p.user_id = u.id
+        LEFT JOIN fasilitas f
+            ON p.fasilitas_id = f.id
+        ORDER BY p.id DESC
+    """)
+
+    data = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        'admin_peminjaman.html',
+        data=data
+    )
+
+@app.route('/admin_fasilitas')
+@login_required
+def admin_fasilitas():
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT * FROM fasilitas
+    """)
+
+    fasilitas = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        'admin_fasilitas.html',
+        fasilitas=fasilitas
+    )
+
+@app.route('/admin_user')
+@login_required
+def admin_user():
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM users
+        WHERE role='user'
+    """)
+
+    users = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        'admin_user.html',
+        users=users
+    )
+
+@app.route('/laporan_admin')
+@login_required
+def laporan_admin():
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            p.*,
+            u.nama_lengkap,
+            f.nama_fasilitas
+        FROM peminjaman p
+        LEFT JOIN users u
+            ON p.user_id = u.id
+        LEFT JOIN fasilitas f
+            ON p.fasilitas_id = f.id
+        ORDER BY p.id DESC
+    """)
+
+    laporan = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        'laporan_admin.html',
+        laporan=laporan
+    )
+
 # ================== UPDATE STATUS ==================
 @app.route('/update_status/<int:id>/<status>')
 @login_required
