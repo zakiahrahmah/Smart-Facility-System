@@ -637,8 +637,8 @@ def tambah_fasilitas():
                 kategori,
                 kode,
                 status,
-                stok,
-                stok_tersedia
+                jumlah_stok,
+                jumlah_tersedia
             )
             VALUES (%s,%s,%s,%s,%s,%s)
         """, (
@@ -716,7 +716,7 @@ def edit_fasilitas(id):
                 kategori=%s,
                 kode=%s,
                 status=%s,
-                stok=%s
+                jumlah_stok=%s
             WHERE id=%s
         """, (
             nama,

@@ -9,12 +9,15 @@
     justify-content:space-between;
     align-items:center;
     margin-bottom:25px;
+    flex-wrap:wrap;
+    gap:15px;
 }
 
 .title{
     font-size:34px;
     font-weight:700;
     color:#0f172a;
+    margin-bottom:5px;
 }
 
 .subtitle{
@@ -47,6 +50,7 @@
 .table th{
     padding:16px;
     border:none;
+    color:#334155;
 }
 
 .table td{
@@ -61,6 +65,8 @@
     border-radius:10px;
     color:white;
     margin-right:5px;
+    text-decoration:none;
+    display:inline-block;
 }
 
 .edit{
@@ -69,6 +75,26 @@
 
 .delete{
     background:#ef4444;
+}
+
+/* BADGE */
+.badge{
+    padding:8px 12px;
+    border-radius:10px;
+}
+
+/* MODAL */
+.modal-content{
+    border:none;
+    border-radius:20px;
+}
+
+.modal-header{
+    border-bottom:1px solid #e2e8f0;
+}
+
+.modal-footer{
+    border-top:1px solid #e2e8f0;
 }
 
 </style>
@@ -99,597 +125,213 @@
 
 <div class="table-card">
 
-    <table class="table align-middle">
+    <div class="table-responsive">
 
-        <thead>
+        <table class="table align-middle">
 
-            <tr>
-                <th>No</th>
-                <th>Nama Fasilitas</th>
-                <th>Kategori</th>
-                <th>Kode</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
+            <thead>
 
-        </thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Fasilitas</th>
+                    <th>Kategori</th>
+                    <th>Kode</th>
+                    <th>Status</th>
+                    <th>Stok</th>
+                    <th>Aksi</th>
+                </tr>
 
-        <tbody>
+            </thead>
 
-            {% for f in fasilitas %}
+            <tbody>
 
-            <tr>
+                {% for f in fasilitas %}
 
-                <td>{{ loop.index }}</td>
+                <tr>
 
-                <td>
-                    <strong>
-                        {{ f.nama_fasilitas }}
-                    </strong>
-                </td>
+                    <td>{{ loop.index }}</td>
 
-                <td>
-                    {{ f.kategori }}
-                </td>
+                    <td>
+                        <strong>
+                            {{ f.nama_fasilitas }}
+                        </strong>
+                    </td>
 
-                <td>
-                    <span class="badge bg-primary">
-                        {{ f.kode }}
-                    </span>
-                </td>
+                    <td>
+                        {{ f.kategori }}
+                    </td>
 
-                <td>
+                    <td>
+                        <span class="badge bg-primary">
+                            {{ f.kode }}
+                        </span>
+                    </td>
 
-                    {% if f.status == 'tersedia' %}
+                    <td>
 
-                    <span class="badge bg-success">
-                        Tersedia
-                    </span>
+                        {% if f.status == 'tersedia' %}
 
-                    {% else %}
-
-                    <span class="badge bg-danger">
-                        Tidak Tersedia
-                    </span>
-
-                    {% endif %}
-
-                </td>
-
-                <td>
-
-                    <button class="action-btn edit"
-                            data-bs-toggle="modal"
-                            data-bs-target="#edit{{ f.id }}">
-
-                        Edit
-
-                    </button>
-
-                    <a href="{{ url_for('hapus_fasilitas', id=f.id) }}">
-
-                        <button class="action-btn delete">
-
-                            Hapus
-
-                        </button>
-
-                    </a>
-
-                </td>
-
-            </tr>
-
-            <!-- MODAL EDIT -->
-            <div class="modal fade"
-                 id="edit{{ f.id }}"
-                 tabindex="-1">
-
-                <div class="modal-dialog">
-
-                    <div class="modal-content">
-
-                        <form method="POST"
-                              action="{{ url_for('edit_fasilitas', id=f.id) }}">
-
-                            <div class="modal-header">
-
-                                <h5 class="modal-title">
-                                    Edit Fasilitas
-                                </h5>
-
-                                <button type="button"
-                                        class="btn-close"
-                                        data-bs-dismiss="modal">
-                                </button>
-
-                            </div>
-
-                            <div class="modal-body">
-
-                                <label class="mb-2">
-                                    Nama Fasilitas
-                                </label>
-
-                                <input type="text"
-                                       name="nama_fasilitas"
-                                       class="form-control mb-3"
-                                       value="{{ f.nama_fasilitas }}">
-
-                                <label class="mb-2">
-                                    Kategori
-                                </label>
-
-                                <input type="text"
-                                       name="kategori"
-                                       class="form-control mb-3"
-                                       value="{{ f.kategori }}">
-
-                                <label class="mb-2">
-                                    Kode
-                                </label>
-
-                                <input type="text"
-                                       name="kode"
-                                       class="form-control mb-3"
-                                       value="{{ f.kode }}">
-
-                                <label class="mb-2">
-                                    Status
-                                </label>
-
-                                <select name="status"
-                                        class="form-control mb-3">
-
-                                    <option value="tersedia"
-                                    {% if f.status == 'tersedia' %}
-                                    selected
-                                    {% endif %}>
-                                        Tersedia
-                                    </option>
-
-                                    <option value="tidak tersedia"
-                                    {% if f.status == 'tidak tersedia' %}
-                                    selected
-                                    {% endif %}>
-                                        Tidak Tersedia
-                                    </option>
-
-                                </select>
-
-                                <label class="mb-2">
-                                    Stok
-                                </label>
-
-                                <input type="number"
-                                       name="stok"
-                                       class="form-control"
-                                       value="{{ f.stok }}">
-
-                            </div>
-
-                            <div class="modal-footer">
-
-                                <button type="submit"
-                                        class="btn btn-primary">
-
-                                    Simpan Perubahan
-
-                                </button>
-
-                            </div>
-
-                        </form>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-</div>
-
-<!-- MODAL TAMBAH -->
-<div class="modal fade"
-     id="modalTambah"
-     tabindex="-1">
-
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-
-            <form method="POST"
-                  action="{{ url_for('tambah_fasilitas') }}">
-
-                <div class="modal-header">
-
-                    <h5 class="modal-title">
-                        Tambah Fasilitas
-                    </h5>
-
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal">
-                    </button>
-
-                </div>
-
-                <div class="modal-body">
-
-                    <label class="mb-2">
-                        Nama Fasilitas
-                    </label>
-
-                    <input type="text"
-                           name="nama_fasilitas"
-                           class="form-control mb-3"
-                           required>
-
-                    <label class="mb-2">
-                        Kategori
-                    </label>
-
-                    <input type="text"
-                           name="kategori"
-                           class="form-control mb-3"
-                           required>
-
-                    <label class="mb-2">
-                        Kode Fasilitas
-                    </label>
-
-                    <input type="text"
-                           name="kode"
-                           class="form-control mb-3"
-                           required>
-
-                    <label class="mb-2">
-                        Status
-                    </label>
-
-                    <select name="status"
-                            class="form-control mb-3">
-
-                        <option value="tersedia">
+                        <span class="badge bg-success">
                             Tersedia
-                        </option>
+                        </span>
 
-                        <option value="tidak tersedia">
+                        {% else %}
+
+                        <span class="badge bg-danger">
                             Tidak Tersedia
-                        </option>
+                        </span>
 
-                    </select>
+                        {% endif %}
 
-                    <label class="mb-2">
-                        Stok
-                    </label>
+                    </td>
 
-                    <input type="number"
-                           name="stok"
-                           class="form-control"
-                           required>
+                    <td>
 
-                </div>
+                        <span class="badge bg-secondary">
+                            {{ f.stok }}
+                        </span>
 
-                <div class="modal-footer">
+                    </td>
 
-                    <button type="submit"
-                            class="btn btn-primary">
+                    <td>
 
-                        Simpan
+                        <button class="action-btn edit"
+                                data-bs-toggle="modal"
+                                data-bs-target="#edit{{ f.id }}">
 
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-
-    </div>
-
-</div>
-
-{% endblock %}{% extends "base_admin.html" %}
-
-{% block content %}
-
-<style>
-
-.page-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:25px;
-}
-
-.title{
-    font-size:34px;
-    font-weight:700;
-    color:#0f172a;
-}
-
-.subtitle{
-    color:#64748b;
-}
-
-/* BUTTON */
-.add-btn{
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:12px 22px;
-    border-radius:14px;
-    font-weight:600;
-}
-
-/* CARD */
-.table-card{
-    background:white;
-    border-radius:24px;
-    padding:25px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.05);
-}
-
-/* TABLE */
-.table thead{
-    background:#f8fafc;
-}
-
-.table th{
-    padding:16px;
-    border:none;
-}
-
-.table td{
-    padding:18px 16px;
-    vertical-align:middle;
-}
-
-/* ACTION */
-.action-btn{
-    border:none;
-    padding:8px 14px;
-    border-radius:10px;
-    color:white;
-    margin-right:5px;
-}
-
-.edit{
-    background:#f59e0b;
-}
-
-.delete{
-    background:#ef4444;
-}
-
-</style>
-
-<div class="page-top">
-
-    <div>
-
-        <h1 class="title">
-            Data Fasilitas
-        </h1>
-
-        <p class="subtitle">
-            Kelola seluruh fasilitas kampus.
-        </p>
-
-    </div>
-
-    <button class="add-btn"
-            data-bs-toggle="modal"
-            data-bs-target="#modalTambah">
-
-        Tambah Fasilitas
-
-    </button>
-
-</div>
-
-<div class="table-card">
-
-    <table class="table align-middle">
-
-        <thead>
-
-            <tr>
-                <th>No</th>
-                <th>Nama Fasilitas</th>
-                <th>Kategori</th>
-                <th>Kode</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for f in fasilitas %}
-
-            <tr>
-
-                <td>{{ loop.index }}</td>
-
-                <td>
-                    <strong>
-                        {{ f.nama_fasilitas }}
-                    </strong>
-                </td>
-
-                <td>
-                    {{ f.kategori }}
-                </td>
-
-                <td>
-                    <span class="badge bg-primary">
-                        {{ f.kode }}
-                    </span>
-                </td>
-
-                <td>
-
-                    {% if f.status == 'tersedia' %}
-
-                    <span class="badge bg-success">
-                        Tersedia
-                    </span>
-
-                    {% else %}
-
-                    <span class="badge bg-danger">
-                        Tidak Tersedia
-                    </span>
-
-                    {% endif %}
-
-                </td>
-
-                <td>
-
-                    <button class="action-btn edit"
-                            data-bs-toggle="modal"
-                            data-bs-target="#edit{{ f.id }}">
-
-                        Edit
-
-                    </button>
-
-                    <a href="{{ url_for('hapus_fasilitas', id=f.id) }}">
-
-                        <button class="action-btn delete">
-
-                            Hapus
+                            Edit
 
                         </button>
 
-                    </a>
+                        <a href="{{ url_for('hapus_fasilitas', id=f.id) }}"
+                           class="action-btn delete">
 
-                </td>
+                            Hapus
 
-            </tr>
+                        </a>
 
-            <!-- MODAL EDIT -->
-            <div class="modal fade"
-                 id="edit{{ f.id }}"
-                 tabindex="-1">
+                    </td>
 
-                <div class="modal-dialog">
+                </tr>
 
-                    <div class="modal-content">
+                <!-- MODAL EDIT -->
+                <div class="modal fade"
+                     id="edit{{ f.id }}"
+                     tabindex="-1">
 
-                        <form method="POST"
-                              action="{{ url_for('edit_fasilitas', id=f.id) }}">
+                    <div class="modal-dialog">
 
-                            <div class="modal-header">
+                        <div class="modal-content">
 
-                                <h5 class="modal-title">
-                                    Edit Fasilitas
-                                </h5>
+                            <form method="POST"
+                                  action="{{ url_for('edit_fasilitas', id=f.id) }}">
 
-                                <button type="button"
-                                        class="btn-close"
-                                        data-bs-dismiss="modal">
-                                </button>
+                                <div class="modal-header">
 
-                            </div>
+                                    <h5 class="modal-title">
+                                        Edit Fasilitas
+                                    </h5>
 
-                            <div class="modal-body">
+                                    <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal">
+                                    </button>
 
-                                <label class="mb-2">
-                                    Nama Fasilitas
-                                </label>
+                                </div>
 
-                                <input type="text"
-                                       name="nama_fasilitas"
-                                       class="form-control mb-3"
-                                       value="{{ f.nama_fasilitas }}">
+                                <div class="modal-body">
 
-                                <label class="mb-2">
-                                    Kategori
-                                </label>
+                                    <label class="mb-2">
+                                        Nama Fasilitas
+                                    </label>
 
-                                <input type="text"
-                                       name="kategori"
-                                       class="form-control mb-3"
-                                       value="{{ f.kategori }}">
+                                    <input type="text"
+                                           name="nama_fasilitas"
+                                           class="form-control mb-3"
+                                           value="{{ f.nama_fasilitas }}"
+                                           required>
 
-                                <label class="mb-2">
-                                    Kode
-                                </label>
+                                    <label class="mb-2">
+                                        Kategori
+                                    </label>
 
-                                <input type="text"
-                                       name="kode"
-                                       class="form-control mb-3"
-                                       value="{{ f.kode }}">
+                                    <input type="text"
+                                           name="kategori"
+                                           class="form-control mb-3"
+                                           value="{{ f.kategori }}"
+                                           required>
 
-                                <label class="mb-2">
-                                    Status
-                                </label>
+                                    <label class="mb-2">
+                                        Kode
+                                    </label>
 
-                                <select name="status"
-                                        class="form-control mb-3">
+                                    <input type="text"
+                                           name="kode"
+                                           class="form-control mb-3"
+                                           value="{{ f.kode }}"
+                                           required>
 
-                                    <option value="tersedia"
-                                    {% if f.status == 'tersedia' %}
-                                    selected
-                                    {% endif %}>
-                                        Tersedia
-                                    </option>
+                                    <label class="mb-2">
+                                        Status
+                                    </label>
 
-                                    <option value="tidak tersedia"
-                                    {% if f.status == 'tidak tersedia' %}
-                                    selected
-                                    {% endif %}>
-                                        Tidak Tersedia
-                                    </option>
+                                    <select name="status"
+                                            class="form-control mb-3">
 
-                                </select>
+                                        <option value="tersedia"
+                                        {% if f.status == 'tersedia' %}
+                                        selected
+                                        {% endif %}>
+                                            Tersedia
+                                        </option>
 
-                                <label class="mb-2">
-                                    Stok
-                                </label>
+                                        <option value="tidak tersedia"
+                                        {% if f.status == 'tidak tersedia' %}
+                                        selected
+                                        {% endif %}>
+                                            Tidak Tersedia
+                                        </option>
 
-                                <input type="number"
-                                       name="stok"
-                                       class="form-control"
-                                       value="{{ f.stok }}">
+                                    </select>
 
-                            </div>
+                                    <label class="mb-2">
+                                        Stok
+                                    </label>
 
-                            <div class="modal-footer">
+                                    <input type="number"
+                                           name="stok"
+                                           class="form-control"
+                                           value="{{ f.jumlah_stok }}"
+                                           required>
 
-                                <button type="submit"
-                                        class="btn btn-primary">
+                                </div>
 
-                                    Simpan Perubahan
+                                <div class="modal-footer">
 
-                                </button>
+                                    <button type="submit"
+                                            class="btn btn-primary">
 
-                            </div>
+                                        Simpan Perubahan
 
-                        </form>
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </div>
 
                     </div>
 
                 </div>
 
-            </div>
+                {% endfor %}
 
-            {% endfor %}
+            </tbody>
 
-        </tbody>
+        </table>
 
-    </table>
+    </div>
 
 </div>
 
