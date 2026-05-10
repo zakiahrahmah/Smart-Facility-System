@@ -619,41 +619,47 @@ def tambah_fasilitas():
     if current_user.role != 'admin':
         return redirect(url_for('dashboard'))
 
-    conn = get_db()
-    cursor = conn.cursor()
+    try:
 
-    nama = request.form['nama_fasilitas']
-    kategori = request.form['kategori']
-    kode = request.form['kode']
-    status = request.form['status']
-    stok = request.form['stok']
+        conn = get_db()
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        INSERT INTO fasilitas
-        (
-            nama_fasilitas,
+        nama = request.form['nama_fasilitas']
+        kategori = request.form['kategori']
+        kode = request.form['kode']
+        status = request.form['status']
+        stok = request.form['stok']
+
+        cursor.execute("""
+            INSERT INTO fasilitas
+            (
+                nama_fasilitas,
+                kategori,
+                kode,
+                status,
+                stok,
+                stok_tersedia
+            )
+            VALUES (%s,%s,%s,%s,%s,%s)
+        """, (
+            nama,
             kategori,
             kode,
             status,
             stok,
-            stok_tersedia
-        )
-        VALUES (%s,%s,%s,%s,%s)
-    """, (
-        nama,
-        kategori,
-        kode,
-        status, 
-        stok,
-        stok
-    ))
+            stok
+        ))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    flash("Fasilitas berhasil ditambahkan!", "success")
+        flash("Fasilitas berhasil ditambahkan!", "success")
 
-    return redirect(url_for('admin_fasilitas'))
+        return redirect(url_for('admin_fasilitas'))
+
+    except Exception as e:
+        return f"TAMBAH FASILITAS ERROR: {str(e)}"
+
 
 # ================= HAPUS FASILITAS =================
 @app.route('/hapus_fasilitas/<int:id>')
@@ -663,20 +669,26 @@ def hapus_fasilitas(id):
     if current_user.role != 'admin':
         return redirect(url_for('dashboard'))
 
-    conn = get_db()
-    cursor = conn.cursor()
+    try:
 
-    cursor.execute("""
-        DELETE FROM fasilitas
-        WHERE id=%s
-    """, (id,))
+        conn = get_db()
+        cursor = conn.cursor()
 
-    conn.commit()
-    conn.close()
+        cursor.execute("""
+            DELETE FROM fasilitas
+            WHERE id=%s
+        """, (id,))
 
-    flash("Fasilitas berhasil dihapus!", "success")
+        conn.commit()
+        conn.close()
 
-    return redirect(url_for('admin_fasilitas'))
+        flash("Fasilitas berhasil dihapus!", "success")
+
+        return redirect(url_for('admin_fasilitas'))
+
+    except Exception as e:
+        return f"HAPUS FASILITAS ERROR: {str(e)}"
+
 
 # ================= EDIT FASILITAS =================
 @app.route('/edit_fasilitas/<int:id>', methods=['POST'])
@@ -686,36 +698,44 @@ def edit_fasilitas(id):
     if current_user.role != 'admin':
         return redirect(url_for('dashboard'))
 
-    conn = get_db()
-    cursor = conn.cursor()
+    try:
 
-    nama = request.form['nama_fasilitas']
-    kategori = request.form['kategori']
-    kode = request.form['kode']
-    stok = request.form['stok']
+        conn = get_db()
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        UPDATE fasilitas
-        SET
-            nama_fasilitas=%s,
-            kategori=%s,
-            kode=%s,
-            stok=%s
-        WHERE id=%s
-    """, (
-        nama,
-        kategori,
-        kode,
-        stok,
-        id
-    ))
+        nama = request.form['nama_fasilitas']
+        kategori = request.form['kategori']
+        kode = request.form['kode']
+        status = request.form['status']
+        stok = request.form['stok']
 
-    conn.commit()
-    conn.close()
+        cursor.execute("""
+            UPDATE fasilitas
+            SET
+                nama_fasilitas=%s,
+                kategori=%s,
+                kode=%s,
+                status=%s,
+                stok=%s
+            WHERE id=%s
+        """, (
+            nama,
+            kategori,
+            kode,
+            status,
+            stok,
+            id
+        ))
 
-    flash("Fasilitas berhasil diupdate!", "success")
+        conn.commit()
+        conn.close()
 
-    return redirect(url_for('admin_fasilitas'))
+        flash("Fasilitas berhasil diupdate!", "success")
+
+        return redirect(url_for('admin_fasilitas'))
+
+    except Exception as e:
+        return f"EDIT FASILITAS ERROR: {str(e)}"
 
 # ================== UPDATE STATUS ==================
 @app.route('/update_status/<int:id>/<status>')
