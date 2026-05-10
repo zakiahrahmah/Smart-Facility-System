@@ -293,29 +293,32 @@ body{
 
 <script>
 
-/* FIX BUG: pakai variable Flask langsung */
 const pending = Number("{{ pending }}");
 const disetujui = Number("{{ disetujui }}");
 const ditolak = Number("{{ ditolak }}");
 
 /* ================= LINE CHART ================= */
+const chartData = JSON.parse('{{ chart_data | tojson | safe }}');
+
 new Chart(document.getElementById('bookingChart'), {
     type: 'line',
     data: {
         labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
         datasets: [{
             label: 'Peminjaman',
-            data: [30, 38, 35, 32, 42, 36, 30],
-            borderColor: '#2563eb',
-            backgroundColor: 'rgba(37,99,235,0.12)',
+            data: chartData,
+            borderWidth: 3,
             tension: 0.4,
-            fill: true,
-            pointRadius: 5
+            fill: false
         }]
     },
     options: {
         responsive: true,
-        scales: { y: { beginAtZero: true } }
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
     }
 });
 

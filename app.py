@@ -20,6 +20,32 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor
     )
 
+#  ================= HELPER FUNCTION  =================
+def get_chart_peminjaman_mingguan():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    query = """
+        SELECT 
+            WEEKDAY(tanggal_pinjam) AS hari,
+            COUNT(*) AS total
+        FROM peminjaman
+        WHERE tanggal_pinjam >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY WEEKDAY(tanggal_pinjam)
+        ORDER BY hari
+    """
+
+    cursor.execute(query)
+    result = cursor.fetchall()
+    conn.close()
+
+    chart_data = [0, 0, 0, 0, 0, 0, 0]
+
+    for row in result:
+        chart_data[row['hari']] = row['total']
+
+    return chart_data
+
 # ================== PASSWORD ==================
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
@@ -485,6 +511,8 @@ def admin_dashboard():
         peminjaman_pending = cursor.fetchall()
 
         conn.close()
+        
+        chart_data = get_chart_peminjaman_mingguan()
 
         return render_template(
             'admin_dashboard.html',
@@ -493,7 +521,8 @@ def admin_dashboard():
             ditolak=ditolak,
             total_fasilitas=total_fasilitas,
             total_mahasiswa=total_mahasiswa,
-            peminjaman_pending=peminjaman_pending
+            peminjaman_pending=peminjaman_pending,
+            chart_data=chart_data
         )
 
     except Exception as e:
