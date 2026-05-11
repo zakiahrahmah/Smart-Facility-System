@@ -4,11 +4,13 @@ import hashlib
 from datetime import datetime
 import pymysql
 import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
 # ================== CONFIG ==================
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'bebas123')
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # ================== DATABASE ==================
 def get_db():
@@ -358,6 +360,93 @@ def pinjam():
 
     except Exception as e:
         return f"PINJAM ERROR: {str(e)}"
+
+@app.route('/pengembalian/<int:peminjaman_id>', methods=['GET', 'POST'])
+@login_required
+def pengembalian(peminjaman_id):
+
+    conn = mysql.connection
+    cursor = conn.cursor()
+
+    # Ambil data peminjaman + fasilitas
+    cursor.execute("""
+        SELECT peminjaman.id,
+               fasilitas.nama_fasilitas
+
+        FROM peminjaman
+
+        JOIN fasilitas
+        ON peminjaman.fasilitas_id = fasilitas.id
+
+        WHERE peminjaman.id = %s
+    """, (peminjaman_id,))
+
+    peminjaman = cursor.fetchone()
+
+    if request.method == 'POST':
+
+        tanggal = request.form['tanggal_pengembalian']
+        kondisi = request.form['kondisi_fasilitas']
+        catatan = request.form['catatan_pengembalian']
+        status = request.form['status_pengembalian']
+
+        # Upload Foto
+        foto = request.files['foto_pengembalian']
+
+        nama_foto = None
+
+        if foto and foto.filename != '':
+
+            nama_foto = secure_filename(foto.filename)
+
+            foto.save(
+                os.path.join(
+                    app.config['UPLOAD_FOLDER'],
+                    nama_foto
+                )
+            )
+
+        # Simpan pengembalian
+        cursor.execute("""
+            INSERT INTO pengembalian
+            (
+                peminjaman_id,
+                tanggal_pengembalian,
+                kondisi_fasilitas,
+                catatan_pengembalian,
+                foto_pengembalian,
+                status_pengembalian
+            )
+
+            VALUES (%s,%s,%s,%s,%s,%s)
+        """, (
+
+            peminjaman_id,
+            tanggal,
+            kondisi,
+            catatan,
+            nama_foto,
+            status
+
+        ))
+
+        # Update status peminjaman
+        cursor.execute("""
+            UPDATE peminjaman
+            SET status='dikembalikan'
+            WHERE id=%s
+        """, (peminjaman_id,))
+
+        conn.commit()
+
+        flash('Pengembalian berhasil!', 'success')
+
+        return redirect(url_for('riwayat_user'))
+
+    return render_template(
+        'pengembalian.html',
+        peminjaman=peminjaman
+    )
 
 # ================== RIWAYAT ==================
 @app.route('/riwayat')

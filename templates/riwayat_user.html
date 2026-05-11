@@ -242,26 +242,41 @@
 
                 </div>
 
-                <!-- BUTTON BATAL -->
-                {% if r.status == 'pending' %}
+               <!-- BUTTON AKSI -->
+                <div class="mt-3">
 
-                <form action="{{ url_for('batal_peminjaman', id=r.id) }}"
-                      method="POST"
-                      class="mt-3">
+                    <!-- JIKA STATUS PENDING -->
+                    {% if r.status == 'pending' %}
 
-                    <button class="btn btn-sm btn-danger rounded-pill"
-                            onclick="return confirm('Batalkan peminjaman ini?')">
+                    <form action="{{ url_for('batal_peminjaman', id=r.id) }}"
+                        method="POST">
 
-                        <i class="fas fa-times"></i>
-                        Batalkan
+                        <button class="btn btn-sm btn-danger rounded-pill w-100"
+                                onclick="return confirm('Batalkan peminjaman ini?')">
 
-                    </button>
+                            <i class="fas fa-times"></i>
+                            Batalkan
 
-                </form>
+                        </button>
 
-                {% endif %}
+                    </form>
 
-            </div>
+                    {% endif %}
+
+                    <!-- JIKA STATUS DISETUJUI -->
+                    {% if r.status == 'disetujui' %}
+
+                    <a href="{{ url_for('pengembalian', peminjaman_id=r.id) }}"
+                    class="btn btn-sm btn-success rounded-pill w-100">
+
+                        <i class="fas fa-undo"></i>
+                        Kembalikan
+
+                    </a>
+
+                    {% endif %}
+
+                </div>
 
         </div>
 
