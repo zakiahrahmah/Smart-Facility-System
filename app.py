@@ -365,7 +365,7 @@ def pinjam():
 @login_required
 def pengembalian(peminjaman_id):
 
-    conn = mysql.connection
+    conn = get_db()
     cursor = conn.cursor()
 
     # Ambil data peminjaman + fasilitas
