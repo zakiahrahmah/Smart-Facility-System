@@ -305,7 +305,7 @@ footer{
 
     <div class="brand">
         <i class="fas fa-building"></i>
-        Smart Facility
+        Smart Facility Booking System
     </div>
 
     <a href="{{ url_for('dashboard') }}">
@@ -327,6 +327,11 @@ footer{
         <i class="fas fa-history"></i>
         Riwayat
     </a>
+    
+    <a href="{{ url_for('pengembalian_list') }}">
+         <i class="fas fa-undo"></i>
+         Pengembalian
+     </a>
 
     {% if current_user.role == 'admin' %}
     <a href="{{ url_for('admin_dashboard') }}">
@@ -415,19 +420,12 @@ and request.endpoint != 'register' %}
 
         <div class="page-wrapper">
 
-            {% block content %}{% endblock %}
+            {% block content %}
+            {% endblock %}
 
         </div>
 
     </div>
-
-</div>
-
-{% else %}
-
-<div class="container-fluid p-0">
-
-    {% block content %}{% endblock %}
 
 </div>
 
