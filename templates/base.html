@@ -174,7 +174,9 @@ footer {
 
 <body>
 
-{% if current_user.is_authenticated %}
+{% if current_user.is_authenticated 
+     and request.endpoint != 'login'
+     and request.endpoint != 'register' %}
 
 <!-- ================= TOGGLE BUTTON ================= -->
 <button class="menu-toggle" onclick="toggleSidebar()">
@@ -228,7 +230,10 @@ footer {
 
 {% endif %}
 
-{% if current_user.is_authenticated %}
+{% if current_user.is_authenticated 
+    and request.endpoint != 'login'
+    and request.endpoint != 'register' %}
+    
 <!-- ================= NAVBAR ================= -->
 <nav class="navbar navbar-expand-lg navbar-dark">
 
