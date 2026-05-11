@@ -908,7 +908,13 @@ def cekdb():
 
     except Exception as e:
         return f"DB ERROR: {str(e)}"
-
+    
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return f"""
+    <h1>ERROR TERJADI</h1>
+    <pre>{str(e)}</pre>
+    """
 # ================== RUN ==================
 if __name__ == "__main__":
 
