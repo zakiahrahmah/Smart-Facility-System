@@ -24,7 +24,6 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-/* input lebih kecil */
 .filter-box input,
 .filter-box select {
     font-size: 14px;
@@ -81,25 +80,10 @@
 }
 
 /* COLORS */
-.status-approved {
-    background: #eafaf1;
-    color: #16a34a;
-}
-
-.status-pending {
-    background: #fff7e6;
-    color: #f59e0b;
-}
-
-.status-rejected {
-    background: #ffecec;
-    color: #ef4444;
-}
-
-.status-cancel {
-    background: #f1f5f9;
-    color: #64748b;
-}
+.status-approved { background: #eafaf1; color: #16a34a; }
+.status-pending { background: #fff7e6; color: #f59e0b; }
+.status-rejected { background: #ffecec; color: #ef4444; }
+.status-cancel { background: #f1f5f9; color: #64748b; }
 
 /* ===== LINK ===== */
 .detail-link {
@@ -124,31 +108,27 @@
 
 <div class="container-fluid">
 
-    <!-- ===== TITLE ===== -->
+    <!-- TITLE -->
     <div class="mb-4">
         <h1 class="page-title">
             <i class="fas fa-history text-primary"></i>
             Riwayat Peminjaman
         </h1>
-
         <p class="page-subtitle">
             Berikut adalah riwayat peminjaman fasilitas yang telah Anda ajukan.
         </p>
     </div>
 
-    <!-- ===== FILTER ===== -->
+    <!-- FILTER -->
     <div class="filter-box mb-4">
-
         <div class="row g-3">
 
             <div class="col-md-4">
-                <input type="text"
-                       class="form-control form-control-lg"
-                       placeholder="🔍 Cari fasilitas...">
+                <input type="text" class="form-control" placeholder="🔍 Cari fasilitas...">
             </div>
 
             <div class="col-md-4">
-                <select class="form-select form-select-lg">
+                <select class="form-select">
                     <option>Semua Status</option>
                     <option>Pending</option>
                     <option>Disetujui</option>
@@ -158,14 +138,13 @@
             </div>
 
             <div class="col-md-4">
-                <input type="date" class="form-control form-control-lg">
+                <input type="date" class="form-control">
             </div>
 
         </div>
-
     </div>
 
-    <!-- ===== LOOP DATA ===== -->
+    <!-- LOOP DATA -->
     {% for r in data %}
 
     <div class="history-card mb-4">
@@ -198,109 +177,85 @@
 
             </div>
 
-
             <!-- CONTENT -->
             <div class="col-md-7">
 
-                <h3 class="fw-bold">
-                    {{ r.nama_fasilitas }}
-                </h3>
+                <h3 class="fw-bold">{{ r.nama_fasilitas }}</h3>
 
-                <p class="mb-1 text-muted">
+                <p class="text-muted">
                     <i class="fas fa-calendar"></i>
-                    {{ r.tanggal_pinjam }}
-                    •
-                    {{ r.waktu_mulai }} - {{ r.waktu_selesai }}
+                    {{ r.tanggal_pinjam }} • {{ r.waktu_mulai }} - {{ r.waktu_selesai }}
                 </p>
 
-                <p class="mb-1 text-muted">
+                <p class="text-muted">
                     <i class="fas fa-user"></i>
                     {{ r.keterangan }}
                 </p>
 
-                <small class="text-secondary">
-                    Diajukan oleh Anda
-                </small>
+                <small class="text-secondary">Diajukan oleh Anda</small>
 
             </div>
 
-            <!-- STATUS -->
+            <!-- STATUS + BUTTON -->
             <div class="col-md-3 text-end">
 
                 {% if r.status == 'disetujui' %}
 
-                <div class="status-badge status-approved">
-                    <i class="fas fa-check-circle"></i>
-                    Disetujui
-                </div>
+                    <div class="status-badge status-approved">
+                        <i class="fas fa-check-circle"></i> Disetujui
+                    </div>
 
                 {% elif r.status == 'pending' %}
 
-                <div class="status-badge status-pending">
-                    <i class="fas fa-clock"></i>
-                    Menunggu
-                </div>
+                    <div class="status-badge status-pending">
+                        <i class="fas fa-clock"></i> Menunggu
+                    </div>
 
                 {% elif r.status == 'ditolak' %}
 
-                <div class="status-badge status-rejected">
-                    <i class="fas fa-times-circle"></i>
-                    Ditolak
-                </div>
+                    <div class="status-badge status-rejected">
+                        <i class="fas fa-times-circle"></i> Ditolak
+                    </div>
 
                 {% else %}
 
-                <div class="status-badge status-cancel">
-                    <i class="fas fa-ban"></i>
-                    Dibatalkan
-                </div>
+                    <div class="status-badge status-cancel">
+                        <i class="fas fa-ban"></i> Dibatalkan
+                    </div>
 
                 {% endif %}
 
                 <div class="mt-3">
 
                     <a href="#" class="detail-link text-primary">
-                        <i class="fas fa-eye"></i>
-                        Lihat Detail
+                        <i class="fas fa-eye"></i> Lihat Detail
                     </a>
 
                 </div>
 
-               <!-- BUTTON AKSI -->
                 <div class="mt-3">
 
-                    <!-- JIKA STATUS PENDING -->
                     {% if r.status == 'pending' %}
 
-                    <form action="{{ url_for('batal_peminjaman', id=r.id) }}"
-                        method="POST">
-
-                        <button class="btn btn-sm btn-danger rounded-pill w-100"
+                    <form action="{{ url_for('batal_peminjaman', id=r.id) }}" method="POST">
+                        <button class="btn btn-sm btn-danger w-100"
                                 onclick="return confirm('Batalkan peminjaman ini?')">
-
-                            <i class="fas fa-times"></i>
                             Batalkan
-
                         </button>
-
                     </form>
 
-                    {% endif %}
-
-                    <!-- JIKA STATUS DISETUJUI -->
-                    {% if r.status == 'disetujui' %}
+                    {% elif r.status == 'disetujui' %}
 
                     <a href="{{ url_for('pengembalian', peminjaman_id=r.id) }}"
-                    class="btn btn-sm btn-success rounded-pill w-100">
-
-                        <i class="fas fa-undo"></i>
+                       class="btn btn-sm btn-success w-100">
                         Kembalikan
-
                     </a>
 
                     {% endif %}
 
                 </div>
+
+            </div>
 
         </div>
 
@@ -308,38 +263,19 @@
 
     {% endfor %}
 
-    <!-- ===== PAGINATION ===== -->
-    <div class="d-flex justify-content-between align-items-center mt-4">
+    <!-- PAGINATION -->
+    <div class="d-flex justify-content-between mt-4">
 
-        <small class="text-muted">
-            Menampilkan {{ data|length }} data
-        </small>
+        <small class="text-muted">Menampilkan {{ data|length }} data</small>
 
-        <nav>
-            <ul class="pagination mb-0">
+        <ul class="pagination mb-0">
 
-                <li class="page-item">
-                    <a class="page-link" href="#">
-                        <i class="fas fa-chevron-left"></i>
-                    </a>
-                </li>
+            <li class="page-item"><a class="page-link" href="#">‹</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">›</a></li>
 
-                <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                </li>
-
-                <li class="page-item">
-                    <a class="page-link" href="#">2</a>
-                </li>
-
-                <li class="page-item">
-                    <a class="page-link" href="#">
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                </li>
-
-            </ul>
-        </nav>
+        </ul>
 
     </div>
 
