@@ -1,6 +1,5 @@
 Flask==3.0.0
 Flask-Login==0.6.3
-Flask-MySQLdb==2.0.0
-mysqlclient==2.2.4
+PyMySQL==1.1.0
 cryptography==42.0.5
 gunicorn==21.2.0
