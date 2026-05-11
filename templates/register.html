@@ -3,11 +3,18 @@
 {% block content %}
 
 <style>
+
+html, body{
+    margin:0;
+    padding:0;
+    width:100%;
+    overflow-x:hidden;
+}
+
 body{
     min-height: 100vh;
 
-    /* BACKGROUND GAMBAR */
-    background: 
+    background:
         linear-gradient(rgba(15,23,42,0.75), rgba(30,58,138,0.75)),
         url("https://tse2.mm.bing.net/th/id/OIP.mHcHdY4y5lYSolRrh2zd4AHaCv?rs=1&pid=ImgDetMain&o=7&rm=3");
 
@@ -80,61 +87,102 @@ a:hover{
 
 </style>
 
-<div class="row justify-content-center align-items-center" style="min-height:100vh;">
-    <div class="col-md-6">
+<div class="container-fluid p-0">
+    <div class="d-flex justify-content-center align-items-center"
+         style="min-height:100vh;">
 
-        <div class="card register-card">
+        <div class="col-11 col-sm-8 col-md-6 col-lg-4">
 
-            <!-- HEADER -->
-            <div class="register-header">
-                <h3 class="mb-0">
-                    <i class="fas fa-user-plus"></i> Registrasi Akun
-                </h3>
-                <small>Buat akun baru untuk mulai menggunakan sistem</small>
-            </div>
+            <div class="card register-card">
 
-            <!-- BODY -->
-            <div class="card-body p-4">
+                <!-- HEADER -->
+                <div class="register-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-plus"></i>
+                        Registrasi Akun
+                    </h3>
 
-                <form method="POST">
+                    <small>
+                        Buat akun baru untuk mulai menggunakan sistem
+                    </small>
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Nama Lengkap</label>
-                        <input type="text" class="form-control" name="nama_lengkap" required>
-                    </div>
+                <!-- BODY -->
+                <div class="card-body p-4">
 
-                    <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" class="form-control" name="username" required>
-                        <small class="text-muted">Digunakan untuk login</small>
-                    </div>
+                    <form method="POST">
 
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control" name="email" required>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Nama Lengkap
+                            </label>
 
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-control" name="password" required>
-                    </div>
+                            <input type="text"
+                                   class="form-control"
+                                   name="nama_lengkap"
+                                   required>
+                        </div>
 
-                    <button type="submit" class="btn btn-register w-100 text-white">
-                        <i class="fas fa-check-circle"></i> Daftar
-                    </button>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Username
+                            </label>
 
-                </form>
+                            <input type="text"
+                                   class="form-control"
+                                   name="username"
+                                   required>
 
-                <hr>
+                            <small class="text-muted">
+                                Digunakan untuk login
+                            </small>
+                        </div>
 
-                <p class="text-center mb-0">
-                    Sudah punya akun?
-                    <a href="{{ url_for('login') }}">Login di sini</a>
-                </p>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Email
+                            </label>
 
+                            <input type="email"
+                                   class="form-control"
+                                   name="email"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input type="password"
+                                   class="form-control"
+                                   name="password"
+                                   required>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-register w-100 text-white">
+
+                            <i class="fas fa-check-circle"></i>
+                            Daftar
+
+                        </button>
+
+                    </form>
+
+                    <hr>
+
+                    <p class="text-center mb-0">
+                        Sudah punya akun?
+
+                        <a href="{{ url_for('login') }}">
+                            Login di sini
+                        </a>
+                    </p>
+
+                </div>
             </div>
         </div>
-
     </div>
 </div>
 

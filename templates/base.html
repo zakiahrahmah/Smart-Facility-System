@@ -186,7 +186,7 @@ footer {
 
     <div class="brand">
         <i class="fas fa-building"></i>
-        Smart Facility
+        Smart Facility <span> Booking System</span>
     </div>
 
     <a href="{{ url_for('dashboard') }}">
@@ -228,6 +228,7 @@ footer {
 
 {% endif %}
 
+{% if current_user.is_authenticated %}
 <!-- ================= NAVBAR ================= -->
 <nav class="navbar navbar-expand-lg navbar-dark">
 
@@ -237,7 +238,7 @@ footer {
            href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('login') }}">
 
             <i class="fas fa-calendar-check"></i>
-            Smart <span class="brand-highlight">Facility</span>
+            Smart Facility <span class="brand-highlight">Booking System</span>
 
         </a>
 
@@ -284,6 +285,7 @@ footer {
     </div>
 
 </nav>
+{% endif %}
 
 <!-- ================= CONTENT ================= -->
 <div class="{% if current_user.is_authenticated %}container mt-4 main-content{% else %}container-fluid p-0{% endif %}">
