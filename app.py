@@ -361,6 +361,7 @@ def pinjam():
     except Exception as e:
         return f"PINJAM ERROR: {str(e)}"
 
+#============PENGEMBALIAN FASILITAS==============
 @app.route('/pengembalian/<int:peminjaman_id>', methods=['GET', 'POST'])
 @login_required
 def pengembalian(peminjaman_id):
@@ -445,6 +446,44 @@ def pengembalian(peminjaman_id):
 
     except Exception as e:
         return f"PENGEMBALIAN ERROR: {str(e)}"
+    
+    
+@app.route('/pengembalian_list')
+@login_required
+def pengembalian_list():
+
+    # hanya admin yang boleh akses (opsional tapi disarankan)
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT 
+                pg.id,
+                pg.peminjaman_id,
+                pg.tanggal_pengembalian,
+                pg.kondisi_fasilitas,
+                pg.catatan_pengembalian,
+                pg.foto_pengembalian,
+                pg.status_pengembalian,
+                p.user_id,
+                f.nama_fasilitas
+            FROM pengembalian pg
+            JOIN peminjaman p ON pg.peminjaman_id = p.id
+            JOIN fasilitas f ON p.fasilitas_id = f.id
+            ORDER BY pg.id DESC
+        """)
+
+        data = cursor.fetchall()
+        conn.close()
+
+        return render_template("pengembalian_list.html", data=data)
+
+    except Exception as e:
+        return f"PENGEMBALIAN LIST ERROR: {str(e)}"
     
 # ================== RIWAYAT ==================
 @app.route('/riwayat')
