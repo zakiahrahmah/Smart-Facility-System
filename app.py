@@ -402,7 +402,7 @@ def pengembalian(peminjaman_id):
                 nama_foto = secure_filename(foto.filename)
 
                 foto.save(os.path.join(upload_path, nama_foto))
-                
+
             cursor.execute("""
                 INSERT INTO pengembalian
                 (
@@ -484,6 +484,83 @@ def pengembalian_list():
     except Exception as e:
         return f"PENGEMBALIAN LIST ERROR: {str(e)}"
     
+@app.route('/admin_pengembalian')
+@login_required
+def admin_pengembalian():
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT 
+            pg.id,
+            p.id as peminjaman_id,
+            f.nama_fasilitas,
+            pg.tanggal_pengembalian,
+            pg.kondisi_fasilitas,
+            pg.status_pengembalian,
+            pg.catatan_pengembalian,
+            pg.foto_pengembalian
+        FROM pengembalian pg
+        JOIN peminjaman p ON pg.peminjaman_id = p.id
+        JOIN fasilitas f ON p.fasilitas_id = f.id
+        ORDER BY pg.id DESC
+    """)
+
+    data = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "admin_pengembalian.html",
+        data=data
+    )
+
+@app.route('/approve_pengembalian/<int:id>')
+@login_required
+def approve_pengembalian(id):
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE pengembalian
+        SET status_pengembalian='Disetujui'
+        WHERE id=%s
+    """, (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('admin_pengembalian'))
+
+@app.route('/tolak_pengembalian/<int:id>')
+@login_required
+def tolak_pengembalian(id):
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE pengembalian
+        SET status_pengembalian='Ditolak'
+        WHERE id=%s
+    """, (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('admin_pengembalian'))
+
 # ================== RIWAYAT ==================
 @app.route('/riwayat')
 @login_required

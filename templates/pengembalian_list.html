@@ -1,107 +1,93 @@
-{% extends "base.html" %}
+{% extends "base_admin.html" %}
 
 {% block content %}
 
 <div class="container mt-4">
 
-    <div class="card shadow border-0 rounded-4">
+<div class="card shadow-lg border-0 rounded-4">
 
-        <!-- HEADER -->
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">
-                <i class="fas fa-undo"></i>
-                Data Pengembalian
-            </h4>
-        </div>
+    <div class="card-header bg-primary text-white">
+        <h4>Data Pengembalian Admin</h4>
+    </div>
 
-        <!-- TABLE -->
-        <div class="card-body">
+    <div class="card-body">
 
-            <div class="table-responsive">
+        <div class="table-responsive">
 
-                <table class="table table-hover align-middle">
+            <table class="table table-hover">
 
-                    <thead class="table-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Fasilitas</th>
-                            <th>Tanggal</th>
-                            <th>Kondisi</th>
-                            <th>Status</th>
-                            <th>Catatan</th>
-                            <th>Foto</th>
-                        </tr>
-                    </thead>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fasilitas</th>
+                        <th>Tanggal</th>
+                        <th>Kondisi</th>
+                        <th>Status</th>
+                        <th>Catatan</th>
+                        <th>Foto</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
 
-                    <tbody>
+                <tbody>
 
-                        {% for d in data %}
+                {% for d in data %}
 
-                        <tr>
+                <tr>
 
-                            <td>{{ d.id }}</td>
+                    <td>{{ d.id }}</td>
+                    <td>{{ d.nama_fasilitas }}</td>
+                    <td>{{ d.tanggal_pengembalian }}</td>
+                    <td>{{ d.kondisi_fasilitas }}</td>
 
-                            <td>{{ d.nama_fasilitas }}</td>
+                    <td>
+                        {% if d.status_pengembalian == 'Pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif d.status_pengembalian == 'Disetujui' %}
+                            <span class="badge bg-success">Disetujui</span>
+                        {% else %}
+                            <span class="badge bg-danger">Ditolak</span>
+                        {% endif %}
+                    </td>
 
-                            <td>{{ d.tanggal_pengembalian }}</td>
+                    <td>{{ d.catatan_pengembalian }}</td>
 
-                            <td>{{ d.kondisi_fasilitas }}</td>
+                    <td>
+                        {% if d.foto_pengembalian %}
+                            <img src="{{ url_for('static', filename='uploads/' + d.foto_pengembalian) }}"
+                                 width="60">
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
 
-                            <td>
+                    <td>
 
-                                {% if d.status_pengembalian == 'Menunggu Verifikasi' %}
+                        <a href="/approve_pengembalian/{{ d.id }}"
+                           class="btn btn-success btn-sm">
+                            ACC
+                        </a>
 
-                                    <span class="badge bg-warning text-dark">
-                                        Pending
-                                    </span>
+                        <a href="/tolak_pengembalian/{{ d.id }}"
+                           class="btn btn-danger btn-sm">
+                            Tolak
+                        </a>
 
-                                {% elif d.status_pengembalian == 'Sudah Dikembalikan' %}
+                    </td>
 
-                                    <span class="badge bg-success">
-                                        Selesai
-                                    </span>
+                </tr>
 
-                                {% else %}
+                {% endfor %}
 
-                                    <span class="badge bg-secondary">
-                                        -
-                                    </span>
+                </tbody>
 
-                                {% endif %}
-
-                            </td>
-
-                            <td>{{ d.catatan_pengembalian }}</td>
-
-                            <td>
-
-                                {% if d.foto_pengembalian %}
-
-                                    <img src="{{ url_for('static', filename='uploads/' + d.foto_pengembalian) }}"
-                                         width="60"
-                                         class="rounded">
-
-                                {% else %}
-
-                                    -
-
-                                {% endif %}
-
-                            </td>
-
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
+            </table>
 
         </div>
 
     </div>
+
+</div>
 
 </div>
 
