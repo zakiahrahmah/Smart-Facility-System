@@ -3,11 +3,19 @@
 {% block content %}
 
 <style>
+
+html, body{
+    margin:0;
+    padding:0;
+    width:100%;
+    overflow-x:hidden;
+}
+
 body{
     min-height: 100vh;
 
     /* BACKGROUND GAMBAR */
-    background: 
+    background:
         linear-gradient(rgba(15,23,42,0.75), rgba(30,58,138,0.75)),
         url("https://tse2.mm.bing.net/th/id/OIP.mHcHdY4y5lYSolRrh2zd4AHaCv?rs=1&pid=ImgDetMain&o=7&rm=3");
 
@@ -80,50 +88,79 @@ a:hover{
 
 </style>
 
-<div class="row justify-content-center align-items-center" style="min-height:100vh;">
-    <div class="col-md-5">
+<div class="container-fluid p-0">
 
-        <div class="card login-card">
+    <div class="d-flex justify-content-center align-items-center"
+         style="min-height:100vh;">
 
-            <!-- HEADER -->
-            <div class="login-header">
-                <h3 class="mb-0">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </h3>
-                <small>Welcome back 👋</small>
-            </div>
+        <div class="col-11 col-sm-8 col-md-5 col-lg-4">
 
-            <!-- BODY -->
-            <div class="card-body p-4">
+            <div class="card login-card">
 
-                <form method="POST">
+                <!-- HEADER -->
+                <div class="login-header">
 
-                    <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" class="form-control" name="username" required>
-                    </div>
+                    <h3 class="mb-0">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </h3>
 
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-control" name="password" required>
-                    </div>
+                    <small>Welcome back 👋</small>
 
-                    <button type="submit" class="btn btn-login w-100 text-white">
-                        <i class="fas fa-key"></i> Login
-                    </button>
+                </div>
 
-                </form>
+                <!-- BODY -->
+                <div class="card-body p-4">
 
-                <hr>
+                    <form method="POST">
 
-                <p class="text-center mb-0">
-                    Belum punya akun?
-                    <a href="{{ url_for('register') }}">Daftar di sini</a>
-                </p>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Username
+                            </label>
 
+                            <input type="text"
+                                   class="form-control"
+                                   name="username"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input type="password"
+                                   class="form-control"
+                                   name="password"
+                                   required>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-login w-100 text-white">
+
+                            <i class="fas fa-key"></i>
+                            Login
+
+                        </button>
+
+                    </form>
+
+                    <hr>
+
+                    <p class="text-center mb-0">
+
+                        Belum punya akun?
+
+                        <a href="{{ url_for('register') }}">
+                            Daftar di sini
+                        </a>
+
+                    </p>
+
+                </div>
             </div>
         </div>
-
     </div>
 </div>
 
