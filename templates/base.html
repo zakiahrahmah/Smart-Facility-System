@@ -15,7 +15,10 @@
 <style>
 
 /* ================= GLOBAL ================= */
-body {
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
     background: #f1f5f9;
     font-family: 'Segoe UI', sans-serif;
 }
@@ -283,7 +286,7 @@ footer {
 </nav>
 
 <!-- ================= CONTENT ================= -->
-<div class="container mt-4 main-content">
+<div class="{% if current_user.is_authenticated %}container mt-4 main-content{% else %}container-fluid p-0{% endif %}">
 
     {% block content %}{% endblock %}
 
