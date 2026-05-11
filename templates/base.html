@@ -409,11 +409,6 @@ footer{
 {% endif %}
 
 <!-- CONTENT -->
-
-{% if current_user.is_authenticated 
-and request.endpoint != 'login'
-and request.endpoint != 'register' %}
-
 <div class="main-content">
 
     <div class="content-wrapper">
@@ -428,8 +423,6 @@ and request.endpoint != 'register' %}
     </div>
 
 </div>
-
-{% endif %}
 
 <!-- FOOTER -->
 <footer>
