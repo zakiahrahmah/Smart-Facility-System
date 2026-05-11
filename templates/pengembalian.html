@@ -2,137 +2,172 @@
 
 {% block content %}
 
-<div class="container">
+<style>
 
-    <div class="row justify-content-center">
+body{
+    background:
+        linear-gradient(rgba(15,23,42,0.75), rgba(30,58,138,0.75)),
+        url("https://tse2.mm.bing.net/th/id/OIP.mHcHdY4y5lYSolRrh2zd4AHaCv?rs=1&pid=ImgDetMain&o=7&rm=3");
+    background-size: cover;
+    background-position: center;
+}
 
-        <div class="col-md-8 col-lg-6">
+/* CARD STYLE SAMA LOGIN */
+.card-pengembalian{
+    border: none;
+    border-radius: 24px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
 
-            <div class="card shadow border-0 rounded-4">
+/* HEADER */
+.header-blue{
+    background: linear-gradient(135deg,#0f172a,#1e3a8a,#2563eb);
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
 
-                <!-- HEADER -->
-                <div class="card-header bg-success text-white text-center py-3">
+/* INPUT */
+.form-control,
+.form-select{
+    border-radius: 12px;
+    padding: 12px;
+}
 
-                    <h4 class="mb-0">
-                        <i class="fas fa-undo"></i>
-                        Form Pengembalian
-                    </h4>
+/* BUTTON */
+.btn-blue{
+    background: linear-gradient(135deg,#1e3a8a,#2563eb,#0ea5e9);
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    color: white;
+    font-weight: 600;
+}
 
-                </div>
+.btn-blue:hover{
+    transform: scale(1.03);
+}
 
-                <!-- BODY -->
-                <div class="card-body p-4">
+</style>
 
-                    <form method="POST" enctype="multipart/form-data">
+<div class="container d-flex justify-content-center align-items-center"
+     style="min-height:100vh;">
 
-                        <!-- ID PEMINJAMAN -->
-                        <div class="mb-3">
+    <div class="col-md-6">
 
-                            <label class="form-label">ID Peminjaman</label>
+        <div class="card card-pengembalian">
 
-                            <input type="text"
-                                   class="form-control"
-                                   value="{{ peminjaman[0] }}"
-                                   readonly>
+            <!-- HEADER -->
+            <div class="header-blue">
 
-                        </div>
+                <h3 class="mb-0">
+                    <i class="fas fa-undo"></i>
+                    Form Pengembalian
+                </h3>
 
-                        <!-- NAMA FASILITAS -->
-                        <div class="mb-3">
+            </div>
 
-                            <label class="form-label">Nama Fasilitas</label>
+            <!-- BODY -->
+            <div class="card-body p-4">
 
-                            <input type="text"
-                                   class="form-control"
-                                   value="{{ peminjaman[1] }}"
-                                   readonly>
+                <form method="POST" enctype="multipart/form-data">
 
-                        </div>
+                    <!-- ID (READ ONLY) -->
+                    <div class="mb-3">
 
-                        <!-- TANGGAL -->
-                        <div class="mb-3">
+                        <label>ID Peminjaman</label>
 
-                            <label class="form-label">Tanggal Pengembalian</label>
+                        <input type="text"
+                               class="form-control"
+                               value="{{ peminjaman.id }}"
+                               readonly>
 
-                            <input type="datetime-local"
-                                   class="form-control"
-                                   name="tanggal_pengembalian"
-                                   required>
+                    </div>
 
-                        </div>
+                    <!-- NAMA FASILITAS (READ ONLY) -->
+                    <div class="mb-3">
 
-                        <!-- KONDISI -->
-                        <div class="mb-3">
+                        <label>Nama Fasilitas</label>
 
-                            <label class="form-label">Kondisi Fasilitas</label>
+                        <input type="text"
+                               class="form-control"
+                               value="{{ peminjaman.nama_fasilitas }}"
+                               readonly>
 
-                            <select class="form-select"
-                                    name="kondisi_fasilitas"
-                                    required>
+                    </div>
 
-                                <option value="Baik">Baik</option>
-                                <option value="Rusak Ringan">Rusak Ringan</option>
-                                <option value="Rusak Berat">Rusak Berat</option>
+                    <!-- TANGGAL -->
+                    <div class="mb-3">
 
-                            </select>
+                        <label>Tanggal Pengembalian</label>
 
-                        </div>
+                        <input type="datetime-local"
+                               class="form-control"
+                               name="tanggal_pengembalian"
+                               required>
 
-                        <!-- CATATAN -->
-                        <div class="mb-3">
+                    </div>
 
-                            <label class="form-label">Catatan Pengembalian</label>
+                    <!-- KONDISI -->
+                    <div class="mb-3">
 
-                            <textarea class="form-control"
-                                      name="catatan_pengembalian"
-                                      rows="4"
-                                      placeholder="Tambahkan catatan jika ada..."></textarea>
+                        <label>Kondisi</label>
 
-                        </div>
+                        <select class="form-select"
+                                name="kondisi_fasilitas">
 
-                        <!-- FOTO -->
-                        <div class="mb-3">
+                            <option>Baik</option>
+                            <option>Rusak Ringan</option>
+                            <option>Rusak Berat</option>
 
-                            <label class="form-label">Upload Foto</label>
+                        </select>
 
-                            <input type="file"
-                                   class="form-control"
-                                   name="foto_pengembalian">
+                    </div>
 
-                        </div>
+                    <!-- CATATAN -->
+                    <div class="mb-3">
 
-                        <!-- STATUS -->
-                        <div class="mb-4">
+                        <label>Catatan</label>
 
-                            <label class="form-label">Status Pengembalian</label>
+                        <textarea class="form-control"
+                                  name="catatan_pengembalian"></textarea>
 
-                            <select class="form-select"
-                                    name="status_pengembalian">
+                    </div>
 
-                                <option value="Menunggu Verifikasi">
-                                    Menunggu Verifikasi
-                                </option>
+                    <!-- FOTO -->
+                    <div class="mb-3">
 
-                                <option value="Sudah Dikembalikan">
-                                    Sudah Dikembalikan
-                                </option>
+                        <label>Upload Foto</label>
 
-                            </select>
+                        <input type="file"
+                               class="form-control"
+                               name="foto_pengembalian">
 
-                        </div>
+                    </div>
 
-                        <!-- BUTTON -->
-                        <button type="submit"
-                                class="btn btn-success w-100 py-2">
+                    <!-- STATUS -->
+                    <div class="mb-3">
 
-                            <i class="fas fa-check-circle"></i>
-                            Submit Pengembalian
+                        <label>Status</label>
 
-                        </button>
+                        <select class="form-select"
+                                name="status_pengembalian">
 
-                    </form>
+                            <option>Menunggu Verifikasi</option>
+                            <option>Sudah Dikembalikan</option>
 
-                </div>
+                        </select>
+
+                    </div>
+
+                    <button class="btn btn-blue w-100">
+                        Submit Pengembalian
+                    </button>
+
+                </form>
 
             </div>
 

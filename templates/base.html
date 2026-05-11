@@ -327,11 +327,6 @@ footer{
         <i class="fas fa-history"></i>
         Riwayat
     </a>
-    
-    <a href="{{ url_for('pengembalian_list') }}">
-         <i class="fas fa-undo"></i>
-         Pengembalian
-     </a>
 
     {% if current_user.role == 'admin' %}
     <a href="{{ url_for('admin_dashboard') }}">

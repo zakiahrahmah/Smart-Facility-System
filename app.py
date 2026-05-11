@@ -388,6 +388,10 @@ def pengembalian(peminjaman_id):
             kondisi = request.form['kondisi_fasilitas']
             catatan = request.form['catatan_pengembalian']
             status = request.form['status_pengembalian']
+            upload_path = app.config['UPLOAD_FOLDER']
+
+            if not os.path.exists(upload_path):
+                os.makedirs(upload_path)
 
             foto = request.files['foto_pengembalian']
 
@@ -397,13 +401,8 @@ def pengembalian(peminjaman_id):
 
                 nama_foto = secure_filename(foto.filename)
 
-                foto.save(
-                    os.path.join(
-                        app.config['UPLOAD_FOLDER'],
-                        nama_foto
-                    )
-                )
-
+                foto.save(os.path.join(upload_path, nama_foto))
+                
             cursor.execute("""
                 INSERT INTO pengembalian
                 (
@@ -447,7 +446,7 @@ def pengembalian(peminjaman_id):
     except Exception as e:
         return f"PENGEMBALIAN ERROR: {str(e)}"
     
-    
+
 @app.route('/pengembalian_list')
 @login_required
 def pengembalian_list():
