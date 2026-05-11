@@ -365,89 +365,87 @@ def pinjam():
 @login_required
 def pengembalian(peminjaman_id):
 
-    conn = get_db()
-    cursor = conn.cursor()
+    try:
 
-    # Ambil data peminjaman + fasilitas
-    cursor.execute("""
-        SELECT peminjaman.id,
-               fasilitas.nama_fasilitas
+        conn = get_db()
+        cursor = conn.cursor()
 
-        FROM peminjaman
-
-        JOIN fasilitas
-        ON peminjaman.fasilitas_id = fasilitas.id
-
-        WHERE peminjaman.id = %s
-    """, (peminjaman_id,))
-
-    peminjaman = cursor.fetchone()
-
-    if request.method == 'POST':
-
-        tanggal = request.form['tanggal_pengembalian']
-        kondisi = request.form['kondisi_fasilitas']
-        catatan = request.form['catatan_pengembalian']
-        status = request.form['status_pengembalian']
-
-        # Upload Foto
-        foto = request.files['foto_pengembalian']
-
-        nama_foto = None
-
-        if foto and foto.filename != '':
-
-            nama_foto = secure_filename(foto.filename)
-
-            foto.save(
-                os.path.join(
-                    app.config['UPLOAD_FOLDER'],
-                    nama_foto
-                )
-            )
-
-        # Simpan pengembalian
         cursor.execute("""
-            INSERT INTO pengembalian
-            (
-                peminjaman_id,
-                tanggal_pengembalian,
-                kondisi_fasilitas,
-                catatan_pengembalian,
-                foto_pengembalian,
-                status_pengembalian
-            )
-
-            VALUES (%s,%s,%s,%s,%s,%s)
-        """, (
-
-            peminjaman_id,
-            tanggal,
-            kondisi,
-            catatan,
-            nama_foto,
-            status
-
-        ))
-
-        # Update status peminjaman
-        cursor.execute("""
-            UPDATE peminjaman
-            SET status='dikembalikan'
-            WHERE id=%s
+            SELECT peminjaman.id,
+                   fasilitas.nama_fasilitas
+            FROM peminjaman
+            JOIN fasilitas
+            ON peminjaman.fasilitas_id = fasilitas.id
+            WHERE peminjaman.id = %s
         """, (peminjaman_id,))
 
-        conn.commit()
+        peminjaman = cursor.fetchone()
 
-        flash('Pengembalian berhasil!', 'success')
+        if request.method == 'POST':
 
-        return redirect(url_for('riwayat_user'))
+            tanggal = request.form['tanggal_pengembalian']
+            kondisi = request.form['kondisi_fasilitas']
+            catatan = request.form['catatan_pengembalian']
+            status = request.form['status_pengembalian']
 
-    return render_template(
-        'pengembalian.html',
-        peminjaman=peminjaman
-    )
+            foto = request.files['foto_pengembalian']
 
+            nama_foto = None
+
+            if foto and foto.filename != '':
+
+                nama_foto = secure_filename(foto.filename)
+
+                foto.save(
+                    os.path.join(
+                        app.config['UPLOAD_FOLDER'],
+                        nama_foto
+                    )
+                )
+
+            cursor.execute("""
+                INSERT INTO pengembalian
+                (
+                    peminjaman_id,
+                    tanggal_pengembalian,
+                    kondisi_fasilitas,
+                    catatan_pengembalian,
+                    foto_pengembalian,
+                    status_pengembalian
+                )
+
+                VALUES (%s,%s,%s,%s,%s,%s)
+            """, (
+
+                peminjaman_id,
+                tanggal,
+                kondisi,
+                catatan,
+                nama_foto,
+                status
+
+            ))
+
+            cursor.execute("""
+                UPDATE peminjaman
+                SET status='dikembalikan'
+                WHERE id=%s
+            """, (peminjaman_id,))
+
+            conn.commit()
+
+            flash('Pengembalian berhasil!', 'success')
+
+            return redirect(url_for('riwayat_user'))
+
+        return render_template(
+            'pengembalian.html',
+            peminjaman=peminjaman
+        )
+
+    except Exception as e:
+        return f"PENGEMBALIAN ERROR: {str(e)}"
+    
 # ================== RIWAYAT ==================
 @app.route('/riwayat')
 @login_required
