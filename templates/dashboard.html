@@ -4,97 +4,128 @@
 
 <style>
 
-/* ===== MAIN ONLY (SIDEBAR SUDAH DI BASE) ===== */
+/* ================= MAIN ================= */
 .main-modern{
-    padding: 30px;
+    padding: 22px;
+    background:#f4f7fe;
 }
 
-/* ===== HERO ===== */
+/* ================= HERO ================= */
 .hero-box{
-    background: linear-gradient(135deg,#0f3b4f,#1c2954);
+    background: linear-gradient(135deg,#0f172a,#1e3a8a,#0ea5e9);
     color: white;
-    border-radius: 24px;
-    padding: 40px;
-    margin-bottom: 30px;
-    box-shadow: 0 12px 30px rgba(15,23,42,0.25);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
-/* ===== CARD ===== */
+.hero-box h1{
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.hero-box p{
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* ================= CARD ================= */
 .dashboard-card{
     background: white;
-    border-radius: 24px;
-    padding: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     border: none;
 }
 
-/* ===== STAT BOX ===== */
+/* ================= STAT BOX ================= */
 .stat-box{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
-/* ===== ICON ===== */
+.stat-box small{
+    font-size:12px;
+    color:#64748b;
+}
+
+.stat-box h2{
+    font-size:20px;
+    margin:0;
+    font-weight:700;
+    color:#0f172a;
+}
+
+/* ================= ICON ================= */
 .stat-icon{
-    width: 60px;
-    height: 60px;
-    border-radius: 16px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    color: white;
+    width:45px;
+    height:45px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    color:white;
 }
 
-.bg-blue{
-    background: linear-gradient(135deg,#2563eb,#1d4ed8);
-}
+.bg-blue{background:linear-gradient(135deg,#2563eb,#1d4ed8);}
+.bg-orange{background:linear-gradient(135deg,#f97316,#fb923c);}
+.bg-green{background:linear-gradient(135deg,#10b981,#059669);}
 
-.bg-orange{
-    background: linear-gradient(135deg,#f97316,#fb923c);
-}
-
-.bg-green{
-    background: linear-gradient(135deg,#10b981,#059669);
-}
-
-/* ===== QUICK MENU ===== */
+/* ================= QUICK MENU (optional kalau dipakai nanti) ================= */
 .quick-menu{
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
-    gap: 18px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;
 }
 
 .quick-item{
-    background: linear-gradient(135deg,#081225,#122f6c);
-    color: white;
-    border-radius: 20px;
-    padding: 25px;
-    text-decoration: none;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+    color:white;
+    padding:18px;
+    border-radius:16px;
+    text-decoration:none;
 }
 
-/* ===== BADGE ===== */
+/* ================= BADGE ================= */
 .badge-modern{
-    padding: 7px 14px;
-    border-radius: 30px;
-    font-size: 12px;
-    background: #e0f2fe !important;
-    color: #081225 !important;
-    font-weight: 600;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:600;
 }
 
-/* ===== RIWAYAT ===== */
+/* ================= RIWAYAT ================= */
 .riwayat-item{
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #e5e7eb;
+    padding-bottom:10px;
+    margin-bottom:10px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:13px;
 }
 
-/* ===== RESPONSIVE ===== */
-@media(max-width:992px){
-    .main-modern{
-        padding: 20px;
+.riwayat-item .fw-bold{
+    font-size:14px;
+}
+
+.text-muted{
+    font-size:12px;
+}
+
+/* ================= GRID FIX ================= */
+.row{
+    margin-top:10px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    .hero-box{
+        padding:20px;
+    }
+
+    .stat-box h2{
+        font-size:18px;
     }
 }
 
@@ -106,11 +137,11 @@
     <!-- HERO -->
     <div class="hero-box">
         <h1>Halo, {{ current_user.nama_lengkap }}</h1>
-        <p>Kelola booking fasilitas dengan mudah.</p>
+        <p>Kelola peminjaman fasilitas dengan mudah dan cepat</p>
     </div>
 
-    <!-- STAT -->
-    <div class="row mb-4">
+    <!-- ================= STAT ================= -->
+    <div class="row g-3">
 
         <div class="col-md-4">
             <div class="dashboard-card">
@@ -150,10 +181,10 @@
 
     </div>
 
-    <!-- RIWAYAT -->
-    <div class="dashboard-card">
+    <!-- ================= RIWAYAT ================= -->
+    <div class="dashboard-card mt-3">
 
-        <h5>Riwayat Booking Terbaru</h5>
+        <h6 class="mb-3">Riwayat Booking Terbaru</h6>
 
         {% for r in riwayat[:5] %}
 
@@ -163,8 +194,8 @@
 
                 <div>
                     <div class="fw-bold">{{ r.nama_fasilitas }}</div>
-                    <small class="text-muted">{{ r.tanggal_pinjam }}</small>
-                    <div class="text-muted mt-1">{{ r.keterangan }}</div>
+                    <small class="text-muted">{{ r.tanggal_pinjam }}</small><br>
+                    <span class="text-muted">{{ r.keterangan }}</span>
                 </div>
 
                 <div>
@@ -178,7 +209,7 @@
                         <span class="badge-modern" style="background:#10b981;color:#fff;">Disetujui</span>
 
                     {% elif status == 'dibatalkan' %}
-                        <span class="badge-modern" style="background:#64748b;color:#fff;">Dibatalkan</span>
+                        <span class="badge-modern" style="background:#64748b;color:#fff;">Batal</span>
 
                     {% else %}
                         <span class="badge-modern" style="background:#ef4444;color:#fff;">Ditolak</span>
@@ -188,7 +219,7 @@
 
             </div>
 
-            <div class="text-muted mt-2">
+            <div class="text-muted mt-1">
                 {{ r.waktu_mulai }} - {{ r.waktu_selesai }}
             </div>
 

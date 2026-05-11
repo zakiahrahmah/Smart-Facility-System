@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Smart Facility Booking</title>
+    <title>Smart Facility Booking </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -29,6 +29,7 @@ body{
     padding:22px;
     box-shadow:4px 0 25px rgba(0,0,0,0.15);
     overflow-y:auto;
+    z-index:100;
 }
 
 /* LOGO */
@@ -61,21 +62,6 @@ body{
 .sidebar-modern a.active{
     background:linear-gradient(135deg,#3283a6,#162d5f);
     color:white;
-}
-
-/* ================= NAVBAR ================= */
-.navbar{
-    position:fixed;
-    top:0;
-    left:260px;
-    right:0;
-    height:70px;
-    background:linear-gradient(135deg,#0e3040,#13275f);
-    color:white;
-    display:flex;
-    align-items:center;
-    padding:0 20px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.15);
 }
 
 /* ================= MAIN ================= */
@@ -121,11 +107,6 @@ footer{
         padding:15px;
     }
 
-    .navbar{
-        left:0;
-        width:100%;
-    }
-
     .menu-toggle{
         display:block;
         position:fixed;
@@ -147,6 +128,7 @@ footer{
 </head>
 
 <body>
+{% if current_user.is_authenticated and request.endpoint not in ['login', 'register'] %}
 
 <!-- TOGGLE MOBILE -->
 <button class="menu-toggle d-lg-none" onclick="toggleSidebar()">
@@ -157,7 +139,7 @@ footer{
 <div class="sidebar-modern">
 
     <div class="brand">
-        Smart Facility Booking
+        Smart Facility Booking System 
     </div>
 
     <a href="{{ url_for('dashboard') }}">
@@ -180,14 +162,6 @@ footer{
         <i class="fas fa-sign-out-alt"></i> Logout
     </a>
 
-</div>
-
-<!-- NAVBAR -->
-<div class="navbar">
-    <div class="ms-auto">
-        <i class="fas fa-user-circle"></i>
-        {{ current_user.nama_lengkap }}
-    </div>
 </div>
 
 <!-- MAIN -->
