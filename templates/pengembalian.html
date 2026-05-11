@@ -2,36 +2,33 @@
 
 {% block content %}
 
-<div class="page-wrapper">
+<div class="container">
 
     <div class="row justify-content-center">
 
-        <div class="col-lg-6">
+        <div class="col-md-8 col-lg-6">
 
-            <div class="card shadow-lg border-0 rounded-4">
+            <div class="card shadow border-0 rounded-4">
 
                 <!-- HEADER -->
-                <div class="card-header bg-success text-white p-4">
+                <div class="card-header bg-success text-white text-center py-3">
 
-                    <h3 class="mb-0">
+                    <h4 class="mb-0">
                         <i class="fas fa-undo"></i>
                         Form Pengembalian
-                    </h3>
+                    </h4>
 
                 </div>
 
                 <!-- BODY -->
                 <div class="card-body p-4">
 
-                    <form method="POST"
-                          enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data">
 
                         <!-- ID PEMINJAMAN -->
                         <div class="mb-3">
 
-                            <label class="form-label">
-                                ID Peminjaman
-                            </label>
+                            <label class="form-label">ID Peminjaman</label>
 
                             <input type="text"
                                    class="form-control"
@@ -43,9 +40,7 @@
                         <!-- NAMA FASILITAS -->
                         <div class="mb-3">
 
-                            <label class="form-label">
-                                Nama Fasilitas
-                            </label>
+                            <label class="form-label">Nama Fasilitas</label>
 
                             <input type="text"
                                    class="form-control"
@@ -57,9 +52,7 @@
                         <!-- TANGGAL -->
                         <div class="mb-3">
 
-                            <label class="form-label">
-                                Tanggal Pengembalian
-                            </label>
+                            <label class="form-label">Tanggal Pengembalian</label>
 
                             <input type="datetime-local"
                                    class="form-control"
@@ -71,25 +64,15 @@
                         <!-- KONDISI -->
                         <div class="mb-3">
 
-                            <label class="form-label">
-                                Kondisi Fasilitas
-                            </label>
+                            <label class="form-label">Kondisi Fasilitas</label>
 
                             <select class="form-select"
                                     name="kondisi_fasilitas"
                                     required>
 
-                                <option value="Baik">
-                                    Baik
-                                </option>
-
-                                <option value="Rusak Ringan">
-                                    Rusak Ringan
-                                </option>
-
-                                <option value="Rusak Berat">
-                                    Rusak Berat
-                                </option>
+                                <option value="Baik">Baik</option>
+                                <option value="Rusak Ringan">Rusak Ringan</option>
+                                <option value="Rusak Berat">Rusak Berat</option>
 
                             </select>
 
@@ -98,34 +81,30 @@
                         <!-- CATATAN -->
                         <div class="mb-3">
 
-                            <label class="form-label">
-                                Catatan Pengembalian
-                            </label>
+                            <label class="form-label">Catatan Pengembalian</label>
 
                             <textarea class="form-control"
                                       name="catatan_pengembalian"
-                                      rows="4"></textarea>
+                                      rows="4"
+                                      placeholder="Tambahkan catatan jika ada..."></textarea>
 
                         </div>
 
                         <!-- FOTO -->
                         <div class="mb-3">
 
-                            <label class="form-label">
-                                Upload Foto
-                            </label>
+                            <label class="form-label">Upload Foto</label>
 
                             <input type="file"
                                    class="form-control"
                                    name="foto_pengembalian">
+
                         </div>
 
                         <!-- STATUS -->
-                        <div class="mb-3">
+                        <div class="mb-4">
 
-                            <label class="form-label">
-                                Status Pengembalian
-                            </label>
+                            <label class="form-label">Status Pengembalian</label>
 
                             <select class="form-select"
                                     name="status_pengembalian">
@@ -144,7 +123,7 @@
 
                         <!-- BUTTON -->
                         <button type="submit"
-                                class="btn btn-success w-100">
+                                class="btn btn-success w-100 py-2">
 
                             <i class="fas fa-check-circle"></i>
                             Submit Pengembalian
