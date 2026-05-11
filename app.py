@@ -2,14 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import hashlib
 from datetime import datetime
-from flask_mysqldb import MySQL
 import pymysql
 import os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-mysql = MySQL(app)
 # ================== CONFIG ==================
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'bebas123')
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
