@@ -81,10 +81,9 @@ body{
 }
 
 .stat-left h2{
-    font-size:30px;
+    font-size:20px;
     font-weight:700;
     color:#0f172a;
-    font-size:20px;
     margin:0;
 }
 
@@ -188,7 +187,7 @@ body{
     <div class="stat-card">
         <div class="stat-left">
             <small>Total Peminjaman</small>
-            <h2>{{ pending + disetujui + ditolak }}</h2>
+            <h2>{{ (pending or 0) + (disetujui or 0) + (ditolak or 0) }}</h2>
         </div>
         <div class="stat-icon blue">📊</div>
     </div>
