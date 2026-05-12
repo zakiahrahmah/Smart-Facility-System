@@ -41,13 +41,18 @@
                     <td>{{ d.kondisi_fasilitas }}</td>
 
                     <td>
-                        {% if d.status_pengembalian == 'Pending' %}
-                            <span class="badge bg-warning text-dark">Pending</span>
-                        {% elif d.status_pengembalian == 'Disetujui' %}
-                            <span class="badge bg-success">Disetujui</span>
-                        {% else %}
-                            <span class="badge bg-danger">Ditolak</span>
-                        {% endif %}
+                        {% if d.status_pengembalian == 'menunggu' %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+
+                    {% elif d.status_pengembalian == 'Disetujui' %}
+                        <span class="badge bg-success">Disetujui</span>
+
+                    {% elif d.status_pengembalian == 'Ditolak' %}
+                        <span class="badge bg-danger">Ditolak</span>
+
+                    {% else %}
+                        <span class="badge bg-secondary">Unknown</span>
+                    {% endif %}
                     </td>
 
                     <td>{{ d.catatan_pengembalian }}</td>

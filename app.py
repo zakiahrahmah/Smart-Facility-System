@@ -361,23 +361,19 @@ def pinjam():
     except Exception as e:
         return f"PINJAM ERROR: {str(e)}"
 
-#============PENGEMBALIAN FASILITAS==============
 @app.route('/pengembalian/<int:peminjaman_id>', methods=['GET', 'POST'])
 @login_required
 def pengembalian(peminjaman_id):
 
     try:
-
         conn = get_db()
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT peminjaman.id,
-                   fasilitas.nama_fasilitas
-            FROM peminjaman
-            JOIN fasilitas
-            ON peminjaman.fasilitas_id = fasilitas.id
-            WHERE peminjaman.id = %s
+            SELECT p.id, f.nama_fasilitas
+            FROM peminjaman p
+            JOIN fasilitas f ON p.fasilitas_id = f.id
+            WHERE p.id = %s
         """, (peminjaman_id,))
 
         peminjaman = cursor.fetchone()
@@ -387,22 +383,21 @@ def pengembalian(peminjaman_id):
             tanggal = request.form['tanggal_pengembalian']
             kondisi = request.form['kondisi_fasilitas']
             catatan = request.form['catatan_pengembalian']
-            status = request.form['status_pengembalian']
+            status_pengembalian = "menunggu"  # 🔥 FIX: jangan ambil dari form langsung
+
             upload_path = app.config['UPLOAD_FOLDER']
 
             if not os.path.exists(upload_path):
                 os.makedirs(upload_path)
 
             foto = request.files['foto_pengembalian']
-
             nama_foto = None
 
             if foto and foto.filename != '':
-
                 nama_foto = secure_filename(foto.filename)
-
                 foto.save(os.path.join(upload_path, nama_foto))
 
+            # INSERT pengembalian
             cursor.execute("""
                 INSERT INTO pengembalian
                 (
@@ -413,19 +408,17 @@ def pengembalian(peminjaman_id):
                     foto_pengembalian,
                     status_pengembalian
                 )
-
                 VALUES (%s,%s,%s,%s,%s,%s)
             """, (
-
                 peminjaman_id,
                 tanggal,
                 kondisi,
                 catatan,
                 nama_foto,
-                status
-
+                status_pengembalian
             ))
 
+            # UPDATE status peminjaman
             cursor.execute("""
                 UPDATE peminjaman
                 SET status='dikembalikan'
@@ -433,57 +426,17 @@ def pengembalian(peminjaman_id):
             """, (peminjaman_id,))
 
             conn.commit()
+            conn.close()
 
             flash('Pengembalian berhasil!', 'success')
 
             return redirect(url_for('riwayat_user'))
 
-        return render_template(
-            'pengembalian.html',
-            peminjaman=peminjaman
-        )
+        return render_template('pengembalian.html', peminjaman=peminjaman)
 
     except Exception as e:
         return f"PENGEMBALIAN ERROR: {str(e)}"
-    
 
-@app.route('/pengembalian_list')
-@login_required
-def pengembalian_list():
-
-    # hanya admin yang boleh akses (opsional tapi disarankan)
-    if current_user.role != 'admin':
-        return redirect(url_for('dashboard'))
-
-    try:
-        conn = get_db()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            SELECT 
-                pg.id,
-                pg.peminjaman_id,
-                pg.tanggal_pengembalian,
-                pg.kondisi_fasilitas,
-                pg.catatan_pengembalian,
-                pg.foto_pengembalian,
-                pg.status_pengembalian,
-                p.user_id,
-                f.nama_fasilitas
-            FROM pengembalian pg
-            JOIN peminjaman p ON pg.peminjaman_id = p.id
-            JOIN fasilitas f ON p.fasilitas_id = f.id
-            ORDER BY pg.id DESC
-        """)
-
-        data = cursor.fetchall()
-        conn.close()
-
-        return render_template("pengembalian_list.html", data=data)
-
-    except Exception as e:
-        return f"PENGEMBALIAN LIST ERROR: {str(e)}"
-    
 @app.route('/admin_pengembalian')
 @login_required
 def admin_pengembalian():
@@ -512,54 +465,21 @@ def admin_pengembalian():
 
     data = cursor.fetchall()
 
+    # 🔥 FIX LABEL STATUS BIAR TIDAK SALAH TAMPIL
+    for d in data:
+        if d['status_pengembalian'] == 'Disetujui':
+            d['status_label'] = "Disetujui"
+        elif d['status_pengembalian'] == 'Ditolak':
+            d['status_label'] = "Ditolak"
+        else:
+            d['status_label'] = "Menunggu"
+
     conn.close()
 
     return render_template(
         "admin_pengembalian.html",
         data=data
     )
-
-@app.route('/approve_pengembalian/<int:id>')
-@login_required
-def approve_pengembalian(id):
-
-    if current_user.role != 'admin':
-        return redirect(url_for('dashboard'))
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        UPDATE pengembalian
-        SET status_pengembalian='Disetujui'
-        WHERE id=%s
-    """, (id,))
-
-    conn.commit()
-    conn.close()
-
-    return redirect(url_for('admin_pengembalian'))
-
-@app.route('/tolak_pengembalian/<int:id>')
-@login_required
-def tolak_pengembalian(id):
-
-    if current_user.role != 'admin':
-        return redirect(url_for('dashboard'))
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        UPDATE pengembalian
-        SET status_pengembalian='Ditolak'
-        WHERE id=%s
-    """, (id,))
-
-    conn.commit()
-    conn.close()
-
-    return redirect(url_for('admin_pengembalian'))
 
 # ================== RIWAYAT ==================
 @app.route('/riwayat')
