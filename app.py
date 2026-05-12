@@ -361,6 +361,7 @@ def pinjam():
     except Exception as e:
         return f"PINJAM ERROR: {str(e)}"
 
+#============PENGEMBALIAN==============
 @app.route('/pengembalian/<int:peminjaman_id>', methods=['GET', 'POST'])
 @login_required
 def pengembalian(peminjaman_id):
@@ -566,6 +567,69 @@ def batal_peminjaman(id):
 
     except Exception as e:
         return f"BATAL ERROR: {str(e)}"
+    
+@app.route('/admin/pengembalian')
+@login_required
+def pengembalian_list():
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM pengembalian
+        ORDER BY id DESC
+    """)
+
+    data = cursor.fetchall()
+    conn.close()
+
+    return render_template('pengembalian_list.html', data=data)
+
+@app.route('/approve_pengembalian/<int:id>')
+@login_required
+def approve_pengembalian(id):
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE pengembalian
+        SET status_pengembalian = 'Disetujui'
+        WHERE id = %s
+    """, (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('pengembalian_list'))
+
+@app.route('/tolak_pengembalian/<int:id>')
+@login_required
+def tolak_pengembalian(id):
+
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE pengembalian
+        SET status_pengembalian = 'Ditolak'
+        WHERE id = %s
+    """, (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('pengembalian_list'))
 
 # ================== ADMIN ==================
 @app.route('/admin_dashboard')

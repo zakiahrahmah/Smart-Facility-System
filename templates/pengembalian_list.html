@@ -68,12 +68,12 @@
 
                     <td>
 
-                        <a href="/approve_pengembalian/{{ d.id }}"
+                        <a href="{{ url_for('approve_pengembalian', id=d.id) }}"
                            class="btn btn-success btn-sm">
                             ACC
                         </a>
 
-                        <a href="/tolak_pengembalian/{{ d.id }}"
+                        <a href="{{ url_for('tolak_pengembalian', id=d.id) }}"
                            class="btn btn-danger btn-sm">
                             Tolak
                         </a>
