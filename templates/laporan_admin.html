@@ -194,29 +194,29 @@
 
                     <td>
 
-                        {% if l.status == 'disetujui' %}
+                        {% if l.status == 'pending' %}
 
-                            <span class="status disetujui">
-                                Disetujui
-                            </span>
+                            <span class="badge bg-warning text-dark">Pending</span>
 
-                        {% elif l.status == 'pending' %}
+                        {% elif l.status == 'disetujui' %}
 
-                            <span class="status pending">
-                                Pending
-                            </span>
+                            <span class="badge bg-success">Disetujui</span>
 
                         {% elif l.status == 'ditolak' %}
 
-                            <span class="status ditolak">
-                                Ditolak
-                            </span>
+                            <span class="badge bg-danger">Ditolak</span>
+
+                        {% elif l.status == 'dikembalikan' %}
+
+                            <span class="badge bg-primary">Dikembalikan</span>
+
+                        {% elif l.status == 'dibatalkan' %}
+
+                            <span class="badge bg-secondary">Dibatalkan</span>
 
                         {% else %}
 
-                            <span class="status dibatalkan">
-                                Dibatalkan
-                            </span>
+                            <span class="badge bg-dark">Unknown</span>
 
                         {% endif %}
 

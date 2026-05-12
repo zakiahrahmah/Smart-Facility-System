@@ -1,5 +1,35 @@
 {% extends "base_admin.html" %}
 
+<style>
+.card {
+    border-radius: 16px;
+}
+
+.table thead {
+    background: #0d6efd;
+    color: white;
+}
+
+.table tbody tr:hover {
+    background: #f1f5f9;
+}
+
+.badge {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 12px;
+}
+
+.btn-sm {
+    border-radius: 8px;
+}
+
+img {
+    border-radius: 8px;
+    object-fit: cover;
+}
+</style>
+
 {% block content %}
 
 <div class="container mt-4">
@@ -42,19 +72,19 @@
 
                     <td>
                         {% if d.status_pengembalian == 'menunggu' %}
-                        <span class="badge bg-warning text-dark">Pending</span>
+                            <span class="badge bg-warning text-dark">Menunggu</span>
 
-                    {% elif d.status_pengembalian == 'Disetujui' %}
-                        <span class="badge bg-success">Disetujui</span>
+                        {% elif d.status_pengembalian == 'Disetujui' %}
+                            <span class="badge bg-success">Disetujui</span>
 
-                    {% elif d.status_pengembalian == 'Ditolak' %}
-                        <span class="badge bg-danger">Ditolak</span>
+                        {% elif d.status_pengembalian == 'Ditolak' %}
+                            <span class="badge bg-danger">Ditolak</span>
 
-                    {% else %}
-                        <span class="badge bg-secondary">Unknown</span>
-                    {% endif %}
+                        {% else %}
+                            <span class="badge bg-secondary">Unknown</span>
+                        {% endif %}
                     </td>
-
+                    
                     <td>{{ d.catatan_pengembalian }}</td>
 
                     <td>

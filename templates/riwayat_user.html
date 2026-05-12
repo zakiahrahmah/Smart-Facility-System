@@ -195,32 +195,42 @@
                 <small class="text-secondary">Diajukan oleh Anda</small>
 
             </div>
-
             <!-- STATUS + BUTTON -->
             <div class="col-md-3 text-end">
 
-                {% if r.status == 'disetujui' %}
-
-                    <div class="status-badge status-approved">
-                        <i class="fas fa-check-circle"></i> Disetujui
-                    </div>
-
-                {% elif r.status == 'pending' %}
+                {% if r.status == 'pending' %}
 
                     <div class="status-badge status-pending">
-                        <i class="fas fa-clock"></i> Menunggu
+                        <i class="fas fa-clock"></i>
+                        Pending
+                    </div>
+
+                {% elif r.status == 'disetujui' %}
+
+                    <div class="status-badge status-approved">
+                        <i class="fas fa-check-circle"></i>
+                        Disetujui
                     </div>
 
                 {% elif r.status == 'ditolak' %}
 
                     <div class="status-badge status-rejected">
-                        <i class="fas fa-times-circle"></i> Ditolak
+                        <i class="fas fa-times-circle"></i>
+                        Ditolak
+                    </div>
+
+                {% elif r.status == 'dibatalkan' %}
+
+                    <div class="status-badge status-cancel">
+                        <i class="fas fa-ban"></i>
+                        Dibatalkan
                     </div>
 
                 {% else %}
 
                     <div class="status-badge status-cancel">
-                        <i class="fas fa-ban"></i> Dibatalkan
+                        <i class="fas fa-question-circle"></i>
+                        {{ r.status }}
                     </div>
 
                 {% endif %}
@@ -247,7 +257,7 @@
                     {% elif r.status == 'disetujui' %}
 
                     <a href="{{ url_for('pengembalian', peminjaman_id=r.id) }}"
-                       class="btn btn-sm btn-success w-100">
+                    class="btn btn-sm btn-success w-100">
                         Kembalikan
                     </a>
 
