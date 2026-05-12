@@ -1,168 +1,288 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
+<head>
 
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-html, body{
-    margin:0;
-    padding:0;
-    width:100%;
-    overflow-x:hidden;
-}
+    <title>Login</title>
 
-body{
-    min-height: 100vh;
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
-    /* BACKGROUND GAMBAR */
-    background:
-        linear-gradient(rgba(15,23,42,0.75), rgba(30,58,138,0.75)),
-        url("https://tse2.mm.bing.net/th/id/OIP.mHcHdY4y5lYSolRrh2zd4AHaCv?rs=1&pid=ImgDetMain&o=7&rm=3");
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
+    <style>
 
-/* CARD LOGIN */
-.login-card{
-    border: none;
-    border-radius: 24px;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    transition: 0.3s;
-}
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
 
-.login-card:hover{
-    transform: translateY(-5px);
-}
+        body{
 
-/* HEADER */
-.login-header{
-    background: linear-gradient(135deg,#0f172a,#1e3a8a,#2563eb);
-    color: white;
-    padding: 25px;
-    text-align: center;
-}
+            min-height:100vh;
 
-/* INPUT */
-.form-control{
-    border-radius: 12px;
-    padding: 12px;
-    border: 1px solid #dbeafe;
-}
+            display:flex;
+            justify-content:center;
+            align-items:center;
 
-.form-control:focus{
-    border-color: #2563eb;
-    box-shadow: 0 0 0 0.2rem rgba(37,99,235,0.2);
-}
+            font-family: Arial, sans-serif;
 
-/* BUTTON */
-.btn-login{
-    background: linear-gradient(135deg,#1e3a8a,#2563eb,#0ea5e9);
-    border: none;
-    border-radius: 12px;
-    padding: 12px;
-    font-weight: 600;
-    transition: 0.3s;
-}
+            background:
+                linear-gradient(rgba(15,23,42,0.78),
+                rgba(30,58,138,0.78)),
 
-.btn-login:hover{
-    transform: scale(1.03);
-    background: linear-gradient(135deg,#0ea5e9,#2563eb,#1e3a8a);
-}
+                url("https://tse2.mm.bing.net/th/id/OIP.mHcHdY4y5lYSolRrh2zd4AHaCv?rs=1&pid=ImgDetMain&o=7&rm=3");
 
-/* LINK */
-a{
-    color: #2563eb;
-    font-weight: 500;
-    text-decoration: none;
-}
+            background-size:cover;
+            background-position:center;
+            background-repeat:no-repeat;
+            background-attachment:fixed;
 
-a:hover{
-    text-decoration: underline;
-}
+            overflow:hidden;
+        }
 
-</style>
+        /* LOGIN CARD */
+        .login-card{
 
-<div class="container-fluid p-0">
+            width:100%;
+            max-width:420px;
 
-    <div class="d-flex justify-content-center align-items-center"
-         style="min-height: 100vh;">
+            border:none;
+            border-radius:24px;
 
-        <div class="col-11 col-sm-8 col-md-5 col-lg-4">
+            background:rgba(255,255,255,0.14);
 
-            <div class="card login-card shadow-lg border-0 rounded-4">
+            backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
 
-    
-                <!-- HEADER -->
-                <div class="login-header">
+            box-shadow:0 15px 40px rgba(0,0,0,0.3);
 
-                    <h3 class="mb-0">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Login
-                    </h3>
+            overflow:hidden;
 
-                    <small>Welcome back 👋</small>
+            animation:fadeIn 0.8s ease;
+        }
 
-                </div>
+        /* ANIMATION */
+        @keyframes fadeIn{
 
-                <!-- BODY -->
-                <div class="card-body p-4">
+            from{
+                opacity:0;
+                transform:translateY(20px);
+            }
 
-                    <form method="POST">
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
 
-                        <div class="mb-3">
-                            <label class="form-label">
-                                Username
-                            </label>
+        }
 
-                            <input type="text"
-                                   class="form-control"
-                                   name="username"
-                                   required>
-                        </div>
+        /* HEADER */
+        .login-header{
 
-                        <div class="mb-3">
-                            <label class="form-label">
-                                Password
-                            </label>
+            background:linear-gradient(
+                135deg,
+                #0f172a,
+                #1e3a8a,
+                #2563eb
+            );
 
-                            <input type="password"
-                                   class="form-control"
-                                   name="password"
-                                   required>
-                        </div>
+            color:white;
 
-                        <button type="submit"
-                                class="btn btn-login w-100 text-white">
+            text-align:center;
 
-                            <i class="fas fa-key"></i>
-                            Login
+            padding:28px;
+        }
 
-                        </button>
+        .login-header h3{
+            font-weight:700;
+        }
 
-                    </form>
+        .login-header small{
+            opacity:0.9;
+        }
 
-                    <hr>
+        /* BODY */
+        .login-body{
+            padding:30px;
+            background:white;
+        }
 
-                    <p class="text-center mb-0">
+        /* LABEL */
+        .form-label{
+            font-weight:600;
+            color:#1e293b;
+            margin-bottom:6px;
+        }
 
-                        Belum punya akun?
+        /* INPUT */
+        .form-control{
 
-                        <a href="{{ url_for('register') }}">
-                            Daftar di sini
-                        </a>
+            border-radius:14px;
 
-                    </p>
+            padding:12px;
 
-                </div>
-            </div>
+            border:1px solid #dbeafe;
+
+            transition:0.3s;
+        }
+
+        .form-control:focus{
+
+            border-color:#2563eb;
+
+            box-shadow:
+                0 0 0 0.2rem rgba(37,99,235,0.2);
+
+        }
+
+        /* BUTTON */
+        .btn-login{
+
+            background:linear-gradient(
+                135deg,
+                #1e3a8a,
+                #2563eb,
+                #0ea5e9
+            );
+
+            border:none;
+
+            border-radius:14px;
+
+            padding:12px;
+
+            font-weight:600;
+
+            color:white;
+
+            transition:0.3s;
+        }
+
+        .btn-login:hover{
+
+            transform:translateY(-2px);
+
+            background:linear-gradient(
+                135deg,
+                #0ea5e9,
+                #2563eb,
+                #1e3a8a
+            );
+
+        }
+
+        /* LINK */
+        a{
+            text-decoration:none;
+            font-weight:600;
+            color:#2563eb;
+        }
+
+        a:hover{
+            text-decoration:underline;
+        }
+
+        /* MOBILE */
+        @media(max-width:576px){
+
+            .login-card{
+                margin:20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="login-card">
+
+        <!-- HEADER -->
+        <div class="login-header">
+
+            <h3>
+                <i class="fas fa-sign-in-alt"></i>
+                Login
+            </h3>
+
+            <small>
+                Welcome back 👋
+            </small>
+
         </div>
-    </div>
-</div>
 
-{% endblock %}
+        <!-- BODY -->
+        <div class="login-body">
+
+            <form method="POST">
+
+                <!-- USERNAME -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Username
+                    </label>
+
+                    <input type="text"
+                           name="username"
+                           class="form-control"
+                           placeholder="Masukkan username"
+                           required>
+
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Password
+                    </label>
+
+                    <input type="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Masukkan password"
+                           required>
+
+                </div>
+
+                <!-- BUTTON -->
+                <button type="submit"
+                        class="btn btn-login w-100">
+
+                    <i class="fas fa-key"></i>
+                    Login
+
+                </button>
+
+            </form>
+
+            <hr>
+
+            <!-- REGISTER -->
+            <p class="text-center mb-0">
+
+                Belum punya akun?
+
+                <a href="{{ url_for('register') }}">
+                    Daftar di sini
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
